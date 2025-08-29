@@ -4,6 +4,7 @@ import ErrorElement from './components/ErrorElement';
 // import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Registration from './pages/Producers/Registration';
+import CreateSmartContract from './pages/government/create-smart-contract';
 
 const routes = createBrowserRouter([
 	{
@@ -51,6 +52,12 @@ const routes = createBrowserRouter([
 		],
 	},
 
+	{
+		path: '/government',
+		children: [
+			{path: 'create-smart-contract', element: <CreateSmartContract />}
+		],
+	},
 	// Catch all
 	{
 		path: '*',
