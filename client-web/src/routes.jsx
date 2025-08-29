@@ -7,12 +7,12 @@ import Login from './pages/auth/Login';
 const routes = createBrowserRouter([
 	{
 		path: '/',
-		loader: loginLoader,
+		// loader: loginLoader,
 		element: <Login />,
 	},
 	{
 		path: '/login',
-		loader: loginLoader,
+		// loader: loginLoader,
 		element: <Login />,
 	},
 	// {
@@ -23,7 +23,7 @@ const routes = createBrowserRouter([
 	// Admin routes
 	{
 		path: '/admin',
-		loader: verifyLoader('admin'),
+		// loader: verifyLoader('admin'),
 		errorElement: <ErrorElement />,
 		children: [
 			// { path: 'dashboard', element: <AdminDashboard /> },
