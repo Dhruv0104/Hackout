@@ -3,6 +3,7 @@ import { loginLoader, verifyLoader } from './loaders/verify.loader';
 import ErrorElement from './components/ErrorElement';
 // import Home from './pages/Home';
 import Login from './pages/auth/Login';
+import Registration from './pages/Producers/Registration';
 
 const routes = createBrowserRouter([
 	{
@@ -35,6 +36,21 @@ const routes = createBrowserRouter([
 			// },
 		],
 	},
+
+	{
+		path: '/producer',
+		errorElement: <ErrorElement />,
+		children: [
+			{ path: 'registration', element: <Registration /> },
+			// { path: 'institute', element: <InstituteList /> },
+			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
+			// {
+			// 	path: 'institute/:instituteId/department/:departmentId',
+			// 	element: <FacultyAndStudentList />,
+			// },
+		],
+	},
+
 	// Catch all
 	{
 		path: '*',

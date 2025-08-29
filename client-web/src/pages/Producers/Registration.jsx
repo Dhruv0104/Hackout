@@ -22,7 +22,6 @@ const Registration = () => {
 		<div className="flex justify-center items-center min-h-screen bg-gray-100">
 			<div className="bg-white shadow-xl rounded-2xl pt-5 pb-8 px-6 w-full max-w-lg">
 				<h2 className="text-2xl font-bold text-center mb-7 text-primary">Registration</h2>
-
 				<Formik
 					initialValues={{
 						companyName: '',
