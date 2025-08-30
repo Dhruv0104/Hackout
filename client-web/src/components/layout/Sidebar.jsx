@@ -10,6 +10,8 @@ import {
 	MonitorDot,
 	Tag,
 	MessageSquareHeart,
+	SquarePen,
+	ReceiptText,
 } from 'lucide-react';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { FaChalkboardTeacher, FaFileAlt } from 'react-icons/fa';
@@ -23,70 +25,22 @@ export default function Sidebar({ isVisible, onClose }) {
 	const instituteId = data ? JSON.parse(data)?.instituteId : null;
 
 	const roleBasedButtons = {
-		ADMIN: [
+		government: [
 			{
 				label: 'Dashboard',
 				icon: <LayoutDashboard size={23} />,
-				route: '/admin/dashboard',
-			},
-			{ label: 'Institutes', icon: 'pi pi-building', route: '/admin/institute' },
-			{ label: 'Tags', icon: <Tag />, route: '/admin/tags' },
-			{ label: 'Feedbacks', icon: <MessageSquareHeart />, route: '/admin/feedback' },
-		],
-		'INSTITUTE-HEAD': [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/hoi/dashboard',
+				route: '/government/dashboard',
 			},
 			{
-				label: 'Departments',
-				icon: 'pi pi-building',
-				route: `/hoi/department/${instituteId}`,
+				label: 'Create Contract',
+				icon: <SquarePen size={23} />,
+				route: '/government/create-smart-contract',
 			},
-		],
-		'DEPARTMENT-HEAD': [
 			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/hod/dashboard',
+				label: 'Active Contracts',
+				icon: <ReceiptText size={23} />,
+				route: '/government/active-contracts',
 			},
-			{ label: 'Faculties', icon: <FaChalkboardTeacher size={23} />, route: '/hod/faculty' },
-			{ label: 'Students', icon: 'pi pi-users', route: '/hod/students' },
-			{ label: 'Groups', icon: <Group />, route: '/hod/groups' },
-			{ label: 'Subjects', icon: 'pi pi-book', route: '/hod/subjects' },
-			{ label: 'Tasks', icon: 'pi pi-list-check', route: '/hod/tasks' },
-			{ label: 'Questions', icon: 'pi pi-question-circle', route: '/hod/questions' },
-			{ label: 'Rubrics', icon: <Table2 />, route: '/hod/rubrics' },
-			{ label: 'Sessions', icon: <MonitorDot />, route: '/hod/sessions' },
-		],
-		FACULTY: [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/faculty/dashboard',
-			},
-			{ label: 'Tasks', icon: 'pi pi-list-check', route: '/faculty/tasks' },
-			{ label: 'Questions', icon: 'pi pi-question-circle', route: '/faculty/questions' },
-			{ label: 'Rubrics', icon: <Table2 />, route: '/faculty/rubrics' },
-			{ label: 'Groups', icon: <Group />, route: '/faculty/groups' },
-			{ label: 'Sessions', icon: <MonitorDot />, route: '/faculty/sessions' },
-			{ label: 'Report', icon: <FaFileAlt size={23} />, route: '/faculty/report' },
-		],
-		STUDENT: [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/student/dashboard',
-			},
-			{ label: 'Upcoming', icon: 'pi pi-calendar-clock', route: '/student/upcoming-task' },
-			{
-				label: 'Available',
-				icon: <CalendarCheck2 size={23} />,
-				route: '/student/available-task',
-			},
-			{ label: 'History', icon: 'pi pi-history', route: '/student/history' },
-			{ label: 'Guidelines', icon: 'pi pi-book', route: '/student/guidelines' },
 		],
 	};
 

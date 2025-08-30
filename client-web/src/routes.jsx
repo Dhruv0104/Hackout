@@ -5,6 +5,8 @@ import ErrorElement from './components/ErrorElement';
 import Login from './pages/auth/Login';
 import Registration from './pages/Producers/Registration';
 import CreateSmartContract from './pages/government/create-smart-contract';
+import GovernmentDashboard from './pages/government/dashboard';
+import ActiveContractsTable from './pages/government/active-contracts';
 
 const routes = createBrowserRouter([
 	{
@@ -55,7 +57,9 @@ const routes = createBrowserRouter([
 	{
 		path: '/government',
 		children: [
-			{path: 'create-smart-contract', element: <CreateSmartContract />}
+			{path: 'create-smart-contract', element: <CreateSmartContract />},
+			{path: 'dashboard', element: <GovernmentDashboard />},
+			{path: 'active-contracts', element: <ActiveContractsTable />},
 		],
 	},
 	// Catch all
