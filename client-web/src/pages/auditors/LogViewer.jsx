@@ -45,7 +45,7 @@ export default function LogViewer() {
 				setMilestoneInfo({
 					...milestoneInfo,
 					description: res.data.milestones[0].description,
-					amount: res.data.totalAmount,
+					amount: res.data.totalAmount * 380000,
 				});
 			} else {
 				toast.current.show({
