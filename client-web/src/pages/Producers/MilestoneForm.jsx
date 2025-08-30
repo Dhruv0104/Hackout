@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -6,8 +6,11 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 import PageLayout from '../../components/layout/PageLayout';
 import { fetchGet } from '../../utils/fetch.utils';
+import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = Yup.object({
 	milestone: Yup.string().required('Milestone is required'),
@@ -18,7 +21,8 @@ const validationSchema = Yup.object({
 export default function MilestoneForm() {
 	const { subsidyId } = useParams();
 	const [milestoneOptions, setMilestoneOptions] = useState([]);
-
+	const toast = useRef(null);
+	const navigate = useNavigate();
 	useEffect(() => {
 		const fetchMilestones = async () => {
 			try {
@@ -65,11 +69,20 @@ export default function MilestoneForm() {
 			const result = await response.json();
 
 			if (!result.success) {
-				alert('Error: ' + result.message);
+				toast.current.show({
+					severity: 'error',
+					summary: 'Error',
+					detail: 'Something Went Wrong!',
+				});
 				return;
 			}
 
-			alert('Milestone submitted successfully!');
+			toast.current.show({
+				severity: 'success',
+				summary: 'Success',
+				detail: 'Submission Successful',
+			});
+			navigate('/producer/subsidies');
 			resetForm();
 		} catch (err) {
 			alert('Error: ' + err.message);
@@ -81,6 +94,7 @@ export default function MilestoneForm() {
 
 	return (
 		<PageLayout>
+			<Toast ref={toast} />
 			<div className="py-3 px-7 m-auto">
 				<div className="flex items-center gap-1">
 					<Button

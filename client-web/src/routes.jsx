@@ -13,6 +13,7 @@ import ProducerDashboard from './pages/Producers/ProducerDashboard';
 import AuditorDashboard from './pages/auditors/AuditorDashboard';
 import VerifyMilestones from './pages/auditors/VerifyMilestones';
 import LogViewer from './pages/auditors/LogViewer';
+import Milestones from './pages/Producers/milestones';
 
 const routes = createBrowserRouter([
 	{
@@ -30,22 +31,6 @@ const routes = createBrowserRouter([
 	// 	loader: loginLoader,
 	// 	element: <ForgotPassword />,
 	// },
-	// Admin routes
-	{
-		path: '/admin',
-		// loader: verifyLoader('admin'),
-		errorElement: <ErrorElement />,
-		children: [
-			// { path: 'dashboard', element: <AdminDashboard /> },
-			// { path: 'institute', element: <InstituteList /> },
-			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
-			// {
-			// 	path: 'institute/:instituteId/department/:departmentId',
-			// 	element: <FacultyAndStudentList />,
-			// },
-		],
-	},
-
 	{
 		path: '/producer',
 		errorElement: <ErrorElement />,
@@ -54,6 +39,7 @@ const routes = createBrowserRouter([
 			{ path: 'dashboard', element: <ProducerDashboard /> },
 			{ path: 'subsidies', element: <MySubsidies /> },
 			{ path: 'milestone-form/:subsidyId', element: <MilestoneForm /> },
+			{ path: 'fetch-milestones/:id', element: <Milestones /> },
 		],
 	},
 

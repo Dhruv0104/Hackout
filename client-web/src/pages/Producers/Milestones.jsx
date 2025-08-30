@@ -1,40 +1,37 @@
-import React, { useState, useRef } from 'react';
-import { TabView, TabPanel } from 'primereact/tabview';
+import { useState, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
 import { Tag } from 'primereact/tag';
 import { useEffect } from 'react';
 import { fetchGet } from '../../utils/fetch.utils';
 import PageLayout from '../../components/layout/PageLayout';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 export default function LogViewer() {
-	const [activeIndex, setActiveIndex] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const [logs, setLogs] = useState([]);
 	const [milestoneInfo, setMilestoneInfo] = useState({});
 	const toast = useRef(null);
+
+	const { id } = useParams('id');
 	const navigate = useNavigate();
-
-	const id = useParams('contractId');
-
 	useEffect(() => {
 		const loadMilestones = async () => {
 			setLoading(true);
 			const res = await fetchGet({
-				pathName: `audit/fetch-milestone-logs/${id.contractId}`,
+				pathName: `producer/fetch-milestones/${id}`,
 			});
 
 			if (res && res.success !== false) {
 				setMilestoneInfo({
 					...milestoneInfo,
-					description: res.data.milestones?.[0]?.description,
-					amount: res.data.totalAmount * 380000,
+					description: res.subsidy.milestones?.[0]?.description,
+					amount: res.subsidy.totalAmount * 380000,
 				});
-				setLogs(res.logs); // ✅ load milestone submissions
+				setLogs(res.data);
 			} else {
 				toast.current.show({
 					severity: 'error',
@@ -61,7 +58,6 @@ export default function LogViewer() {
 					/>
 					Contract Logs & Documents
 				</h2>
-
 				<div className="mb-6 p-5 flex justify-between items-center bg-gray-50 border border-gray-200 rounded-xl p-4">
 					<div>
 						<h3 className="text-xl font-semibold text-gray-800">
@@ -71,26 +67,6 @@ export default function LogViewer() {
 							Amount: ₹{milestoneInfo.amount}
 						</p>
 					</div>
-					{logs.length > 0 &&
-					milestoneInfo.description <= logs[logs.length - 1]?.description ? (
-						<div className="flex gap-3 h-10">
-							<Button
-								label="Accept"
-								disabled
-								className="p-button-success p-button-sm"
-							/>
-							<Button
-								label="Reject"
-								disabled
-								className="p-button-danger p-button-sm"
-							/>
-						</div>
-					) : (
-						<div className="flex gap-3 h-10">
-							<Button label="Accept" className="p-button-success p-button-sm" />
-							<Button label="Reject" className="p-button-danger p-button-sm" />
-						</div>
-					)}
 				</div>
 				<Card className="shadow-lg rounded-2xl">
 					<DataTable
