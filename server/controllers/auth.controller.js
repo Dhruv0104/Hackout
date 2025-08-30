@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-const userModel = require('../models/user.model');
-const studentModel = require('../models/student.model');
-const facultyModel = require('../models/faculty.model');
-const { sendResetPasswordEmail } = require('../utils/mailer');
+const governmentModel = require('../models/government.model');
+const auditModel = require('../models/audit.model');
+const producerModel = require('../models/producer.model');
+// const { sendResetPasswordEmail } = require('../utils/mailer');
 
 async function login(req, res) {
 	const { username, password, role } = req.body;
@@ -13,45 +13,43 @@ async function login(req, res) {
 			.status(400)
 			.json({ success: false, message: 'username, password and role required' });
 
-	let profile = null;
-	let user = await userModel.findOne({ username: username, password: md5(password) });
-	if (!user) return res.status(404).json({ message: 'User not found' });
-
-	if (user.role === 'STUDENT') {
-		profile = await studentModel.findOne({ userId: user._id });
-		if (!profile) return res.status(404).json({ message: 'Student profile not found' });
-	} else if (user.role === 'AUTHORITY') {
-		profile = await facultyModel.findOne({ userId: user._id });
-		if (!profile) return res.status(404).json({ message: 'Authority profile not found' });
+	let user;
+	if (role == 'government') {
+		user = await governmentModel.findOne({ username, password: md5(password) });
+		if (!user) return res.status(404).json({ message: 'Government user not found' });
+	} else if (role == 'auditor') {
+		user = await auditModel.findOne({ username, password: md5(password) });
+		if (!user) return res.status(404).json({ message: 'Auditor user not found' });
+	} else if (role == 'producer') {
+		user = await producerModel.findOne({ username, password: md5(password) });
+		if (!user) return res.status(404).json({ message: 'Producer user not found' });
 	}
 
 	const token = jwt.sign(
 		{
 			_id: user._id,
-			permissions: user.permissions,
-			role: user.role == 'STUDENT' ? user.role : profile.role,
+			role: role,
 		},
 		process.env.JWT_SECRET,
 		{ expiresIn: '1d' }
 	);
 
-	user.currentToken = token;
-	await user.save();
-
+	// user.currentToken = token;
+	// await user.save();
 	res.json({
 		success: true,
 		data: {
 			token,
 			username: user.username,
-			role: user.role == 'STUDENT' ? user.role : profile.role,
+			role: role,
 			_id: user._id,
-			profile: profile,
+			profile: user,
 		},
 	});
 }
 
 async function logout(req, res) {
-	await userModel.updateOne({ _id: req.body._id }, { currentToken: null });
+	// await userModel.updateOne({ _id: req.body._id }, { currentToken: null });
 	res.clearCookie('auth');
 	return res.json({ success: true });
 }

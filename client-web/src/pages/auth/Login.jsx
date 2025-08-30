@@ -43,11 +43,9 @@ const Login = () => {
 
 			if (response?.success) {
 				login(response.data);
-				if (response.data.role === 'STUDENT') navigate('/student/dashboard');
-				else if (response.data.role === 'FACULTY') navigate('/faculty/dashboard');
-				else if (response.data.role === 'DEPARTMENT-HEAD') navigate('/hod/dashboard/');
-				else if (response.data.role === 'INSTITUTE-HEAD') navigate('/hoi/dashboard');
-				else if (response.data.role === 'ADMIN') navigate('/admin/dashboard');
+				if (response.data.role === 'government') navigate('/government/dashboard');
+				else if (response.data.role === 'auditor') navigate('/auditor/dashboard');
+				else if (response.data.role === 'producer') navigate('/producer/dashboard');
 				else navigate('/');
 			} else {
 				toast.current.show({
