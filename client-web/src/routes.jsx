@@ -31,22 +31,6 @@ const routes = createBrowserRouter([
 	// 	loader: loginLoader,
 	// 	element: <ForgotPassword />,
 	// },
-	// Admin routes
-	{
-		path: '/admin',
-		// loader: verifyLoader('admin'),
-		errorElement: <ErrorElement />,
-		children: [
-			// { path: 'dashboard', element: <AdminDashboard /> },
-			// { path: 'institute', element: <InstituteList /> },
-			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
-			// {
-			// 	path: 'institute/:instituteId/department/:departmentId',
-			// 	element: <FacultyAndStudentList />,
-			// },
-		],
-	},
-
 	{
 		path: '/producer',
 		errorElement: <ErrorElement />,

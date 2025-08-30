@@ -15,5 +15,6 @@ router.post(
 	asyncRouteHandler(producerController.submitMilestone)
 );
 router.get('/fetch-milestones/:id', asyncRouteHandler(producerController.fetchMilestones));
+router.get('/dashboard/:id', asyncRouteHandler(producerController.getProducerDashboard));
 
 module.exports = router;
