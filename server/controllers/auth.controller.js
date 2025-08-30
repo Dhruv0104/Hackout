@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
+const { ethers } = require('ethers');
 const governmentModel = require('../models/government.model');
 const auditModel = require('../models/audit.model');
 const producerModel = require('../models/producer.model');
@@ -187,10 +188,38 @@ async function changePassword(req, res) {
 	return res.status(200).json({ success: true, message: 'Password updated successfully' });
 }
 
+async function registrationProducer(req, res) {
+	const { companyName, contactPerson, phone, email } = req.body;
+
+	if (!companyName || !contactPerson || !phone || !email) {
+		return res.status(400).json({ message: 'All fields are required' });
+	}
+
+	const existingUser = await producerModel.findOne({ email });
+	if (existingUser) {
+		return res.status(400).json({ message: 'Email is already in use' });
+	}
+
+	const newUser = new producerModel({
+		username: email,
+		password: md5('123'),
+		companyName,
+		contactPerson,
+		email,
+		phone,
+	});
+	const wallet = ethers.Wallet.createRandom();
+	newUser.walletAddress = wallet.address;
+	newUser.privateKey = wallet.privateKey;
+	await newUser.save();
+	return res.status(201).json({ success: true, message: 'Producer registered successfully' });
+}
+
 module.exports = {
 	login,
 	logout,
 	forgotPassword,
 	verify,
 	changePassword,
+	registrationProducer,
 };

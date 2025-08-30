@@ -8,5 +8,6 @@ router.post('/login', asyncRouteHandler(authController.login));
 router.post('/logout', asyncRouteHandler(authController.logout));
 router.post('/forgot-password', asyncRouteHandler(authController.forgotPassword));
 router.post('/change-password', asyncRouteHandler(authController.changePassword));
+router.post('/registration-producer', asyncRouteHandler(authController.registrationProducer));
 
 module.exports = router;
