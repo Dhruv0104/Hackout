@@ -1,5 +1,5 @@
 const SubsidyModel = require('../models/subsidy.model');
-
+const MilestoneModel = require('../models/milestoneSubmission.model');
 
 async function fetchAllSubsidies(req, res) {
     const subsidies= await SubsidyModel.find().populate('producer');
@@ -21,8 +21,10 @@ async function fetchAllSubsidies(req, res) {
 async function fetchMilestoneLogs(req,res){
     const { contractId } = req.params; 
     const subsidy = await SubsidyModel.findById(contractId);  
-    return res.json({ success: true, data: subsidy });
+    const logs=await MilestoneModel.find({subsidy:contractId});
+    return res.json({ success: true, data: subsidy, logs: logs });
 }
+
 
 module.exports = {
     fetchAllSubsidies,

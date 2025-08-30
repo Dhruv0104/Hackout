@@ -294,18 +294,6 @@ export default function VerifyMilestones() {
 										handleViewContract(rowData.id);
 									}}
 								/>
-								<Button
-									label="Accept"
-									className="p-button-success p-button-sm"
-									onClick={() => handleAccept(rowData)}
-								/>
-								<Button
-									label="Reject"
-									className="p-button-danger p-button-sm"
-									onClick={() => {
-										handleReject(rowData);
-									}}
-								/>
 							</div>
 						)}
 						bodyClassName="text-center border border-gray-300"
