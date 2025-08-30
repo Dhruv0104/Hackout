@@ -9,4 +9,7 @@ router.get(
 	asyncRouteHandler(auditController.fetchMilestoneLogs)
 );
 router.get('/dashboard/:id', asyncRouteHandler(auditController.getAuditorDashboard));
+router.post('/release', asyncRouteHandler(auditController.releaseMilestone));
+router.post('/reject', asyncRouteHandler(auditController.rejectByAudit));
+
 module.exports = router;

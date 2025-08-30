@@ -1,5 +1,12 @@
 const SubsidyModel = require('../models/subsidy.model');
 const MilestoneModel = require('../models/milestoneSubmission.model');
+const { ethers } = require('ethers');
+
+const SubsidyContract = require('../../hackout-contract/artifacts/contracts/Subsidy.sol/Subsidy.json');
+const artifact = SubsidyContract;
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 async function fetchAllSubsidies(req, res) {
 	const subsidies = await SubsidyModel.find().populate('producer');
@@ -88,8 +95,113 @@ async function getAuditorDashboard(req, res) {
 	}
 }
 
+async function releaseMilestone(req, res) {
+	try {
+		const { contractId, milestoneIndex } = req.body;
+
+		if (!contractId || milestoneIndex === undefined) {
+			return res
+				.status(400)
+				.json({ success: false, message: 'Missing contractId or milestoneIndex' });
+		}
+
+		const contract1 = await SubsidyModel.findById(contractId)
+			.select('contractAddress')
+			.lean()
+			.exec();
+		const contractAddress = contract1.contractAddress;
+
+		// Load contract
+		const contract = new ethers.Contract(contractAddress, artifact.abi, wallet);
+
+		// Call releaseMilestone
+		const tx = await contract.releaseMilestone(milestoneIndex);
+		const receipt = await tx.wait();
+
+		// Update in DB
+		const subsidy = await SubsidyModel.findOne({ contractAddress });
+		if (!subsidy) {
+			return res.status(404).json({ success: false, message: 'Subsidy record not found' });
+		}
+
+		if (subsidy.milestones[milestoneIndex]) {
+			subsidy.milestones[milestoneIndex].isReleased = true;
+			subsidy.milestones[milestoneIndex].releasedAt = new Date();
+		}
+
+		// If all milestones released, mark contract complete
+		const allReleased = subsidy.milestones.every((m) => m.isReleased);
+		if (allReleased) subsidy.status = 'Completed';
+
+		await subsidy.save();
+
+		await MilestoneModel.updateMany(
+			{ subsidy: subsidy._id },
+			{ $set: { status: 'Verified', verifiedAt: new Date() } }
+		);
+
+		return res.status(200).json({
+			success: true,
+			message: `Milestone ${milestoneIndex} released`,
+			txHash: receipt.transactionHash,
+			subsidy,
+		});
+	} catch (err) {
+		console.error('Release Milestone Error:', err);
+		return res.status(500).json({ success: false, message: err.message });
+	}
+}
+
+async function rejectByAudit(req, res) {
+	try {
+		const { subsidyId, auditorId, reason } = req.body;
+		console.log(req.body);
+
+		if (!subsidyId || !auditorId || !reason) {
+			return res.status(400).json({
+				success: false,
+				message: 'subsidyId, auditorId and reason are required',
+			});
+		}
+
+		// Fetch subsidy
+		const subsidy = await SubsidyModel.findById(subsidyId);
+		if (!subsidy) {
+			return res.status(404).json({ success: false, message: 'Subsidy not found' });
+		}
+
+		// Check auditor match
+		if (subsidy.auditor.toString() !== auditorId) {
+			return res.status(403).json({ success: false, message: 'Not authorized auditor' });
+		}
+
+		// Update status
+		subsidy.status = 'Rejected';
+		// subsidy.rejectionReason = reason;
+		subsidy.rejectedAt = new Date();
+
+		await subsidy.save();
+
+		await MilestoneModel.updateMany(
+			{ subsidy: subsidy._id },
+			{ $set: { status: 'Rejected', verifiedAt: new Date() } }
+		);
+
+		return res.status(200).json({
+			success: true,
+			message: 'Subsidy contract rejected by audit',
+			subsidy,
+		});
+	} catch (err) {
+		console.error('RejectByAudit Error:', err);
+		return res.status(500).json({ success: false, message: err.message });
+	}
+}
+
 module.exports = {
 	fetchAllSubsidies,
 	fetchMilestoneLogs,
 	getAuditorDashboard,
+	releaseMilestone,
+	rejectByAudit,
 };

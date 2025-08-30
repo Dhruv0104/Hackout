@@ -18,7 +18,7 @@ const subsidySchemeSchema = new mongoose.Schema({
 	contractAddress: { type: String }, // blockchain smart contract address
 	status: {
 		type: String,
-		enum: ['Created', 'Funded', 'InProgress', 'Completed'],
+		// enum: ['Created', 'Funded', 'InProgress', 'Completed'],
 		default: 'Created',
 	},
 	createdAt: { type: Date, default: Date.now },

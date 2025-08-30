@@ -7,6 +7,7 @@ import PageLayout from '../../components/layout/PageLayout';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { fetchGet, fetchPost } from '../../utils/fetch.utils';
+import { useNavigate } from 'react-router-dom';
 
 const CreateSmartContract = () => {
 	const initialValues = {
@@ -16,6 +17,7 @@ const CreateSmartContract = () => {
 		milestone: { description: '', amount: '' },
 	};
 	const [producers, setProducers] = useState([]);
+	const navigate = useNavigate();
 
 	const validationSchema = Yup.object().shape({
 		contractName: Yup.string().required('Contract Name is required'),
@@ -65,7 +67,8 @@ const CreateSmartContract = () => {
 				}),
 			});
 			if (res?.success) {
-				alert('Smart Contract Deployed! Check console for details.');
+				navigate('/government/dashboard');
+				// alert('Smart Contract Deployed! Check console for details.');
 			} else {
 				console.error('Failed to create contract:', res?.message);
 			}

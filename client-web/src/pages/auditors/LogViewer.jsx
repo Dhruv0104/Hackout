@@ -47,8 +47,75 @@ export default function LogViewer() {
 		loadMilestones();
 	}, []);
 
+	async function handleAccept() {
+		try {
+			const res = await fetchPost({
+				pathName: `audit/release`,
+				body: JSON.stringify({
+					contractId: id.contractId,
+					milestoneIndex: 0,
+				}),
+			});
+
+			if (res && res.success !== false) {
+				toast.current.show({
+					severity: 'success',
+					summary: 'Success',
+					detail: 'Milestone accepted',
+				});
+			} else {
+				toast.current.show({
+					severity: 'error',
+					summary: 'Error',
+					detail: 'Failed to accept milestone',
+				});
+			}
+		} catch (err) {
+			toast.current.show({
+				severity: 'error',
+				summary: 'Error',
+				detail: 'Failed to accept milestone',
+			});
+		}
+	}
+
+	async function handleReject() {
+		try {
+			const id1 = localStorage.getItem('_id');
+			const res = await fetchPost({
+				pathName: `audit/reject`,
+				body: JSON.stringify({
+					subsidyId: id.contractId,
+					auditorId: id1,
+					reason: "Submitted Documents are not valid and doesn't match submitted details of production", // Replace with actual reason
+				}),
+			});
+
+			if (res && res.success !== false) {
+				toast.current.show({
+					severity: 'success',
+					summary: 'Success',
+					detail: 'Milestone rejected',
+				});
+			} else {
+				toast.current.show({
+					severity: 'error',
+					summary: 'Error',
+					detail: 'Failed to reject milestone',
+				});
+			}
+		} catch (err) {
+			toast.current.show({
+				severity: 'error',
+				summary: 'Error',
+				detail: 'Failed to reject milestone',
+			});
+		}
+	}
+
 	return (
 		<PageLayout>
+			<Toast ref={toast} />
 			<div className="px-4 py-6">
 				<h2 className="text-3xl font-bold text-primary mb-6">
 					<Button
@@ -76,19 +143,29 @@ export default function LogViewer() {
 						<div className="flex gap-3 h-10">
 							<Button
 								label="Accept"
-								disabled
 								className="p-button-success p-button-sm"
+								onClick={handleAccept}
+								disabled={true}
 							/>
 							<Button
 								label="Reject"
-								disabled
 								className="p-button-danger p-button-sm"
+								onClick={handleReject}
+								disabled={true}
 							/>
 						</div>
 					) : (
 						<div className="flex gap-3 h-10">
-							<Button label="Accept" className="p-button-success p-button-sm" />
-							<Button label="Reject" className="p-button-danger p-button-sm" />
+							<Button
+								label="Accept"
+								className="p-button-success p-button-sm"
+								onClick={handleAccept}
+							/>
+							<Button
+								label="Reject"
+								className="p-button-danger p-button-sm"
+								onClick={handleReject}
+							/>
 						</div>
 					)}
 				</div>
