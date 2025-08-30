@@ -1,19 +1,23 @@
 // ContractsTable.jsx
-import React, { useEffect, useRef, useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
-import { ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
-import PageLayout from '../../components/layout/PageLayout';
-import { fetchGet } from '../../utils/fetch.utils';
-import { useNavigate } from 'react-router-dom';
-import { FilterMatchMode } from 'primereact/api';
+import React, { useEffect, useRef, useState } from "react";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { Calendar } from "primereact/calendar";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
+import {
+  ArrowUpDown,
+  ArrowDownNarrowWide,
+  ArrowUpNarrowWide,
+} from "lucide-react";
+import PageLayout from "../../components/layout/PageLayout";
+import { fetchGet } from "../../utils/fetch.utils";
+import { useNavigate } from "react-router-dom";
+import { FilterMatchMode } from "primereact/api";
 
-const CONTRACT_STATUS = ['Pending', 'Active', 'Completed'];
+const CONTRACT_STATUS = ["Pending", "Active", "Completed"];
 
 function ActiveContractsTable() {
   const [contracts, setContracts] = useState([]);
@@ -26,7 +30,7 @@ function ActiveContractsTable() {
     milestoneAmount: { value: null, matchMode: FilterMatchMode.EQUALS },
     deployedAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
   });
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [loading, setLoading] = useState(true);
   const toast = useRef(null);
   const navigate = useNavigate();
@@ -37,22 +41,28 @@ function ActiveContractsTable() {
 
   const getContracts = async () => {
     try {
-      const res = await fetchGet({ pathName: 'contracts' });
+      const res = await fetchGet({
+        pathName: "government/fetch-active-contracts",
+      });
       const data = res.data || [];
-      const parsed = data.map((contract, index) => ({
-        ...contract,
-        serialNo: data.length - index,
-        deployedAt: contract.deployedAt ? new Date(contract.deployedAt) : null,
-        milestoneDescription: contract.milestones[0]?.description || '-',
-        milestoneAmount: contract.milestones[0]?.amount || 0,
-      })).reverse();
+      const parsed = data
+        .map((contract, index) => ({
+          ...contract,
+          serialNo: data.length - index,
+          deployedAt: contract.deployedAt
+            ? new Date(contract.deployedAt)
+            : null,
+          milestoneDescription: contract.milestones[0]?.description || "-",
+          milestoneAmount: contract.milestones[0]?.amount || 0,
+        }))
+        .reverse();
       setContracts(parsed);
     } catch (error) {
       console.error(error);
       toast.current.show({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Failed to load contracts',
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to load contracts",
       });
     } finally {
       setLoading(false);
@@ -81,17 +91,36 @@ function ActiveContractsTable() {
     />
   );
 
+  const statusTemplate = (rowData) => {
+    let statusClass =
+      rowData.status === "Approved"
+        ? "bg-green-100 text-green-700"
+        : rowData.status === "InProgress"
+        ? "bg-yellow-100 text-yellow-700"
+        : "bg-red-100 text-red-700";
+
+    return (
+      <span
+        className={`px-3 py-1 rounded-full text-sm font-medium ${statusClass}`}
+      >
+        {rowData.status}
+      </span>
+    );
+  };
   const clearFilters = () => {
     setFilters({
       contractName: { value: null, matchMode: FilterMatchMode.CONTAINS },
       producerName: { value: null, matchMode: FilterMatchMode.CONTAINS },
       status: { value: null, matchMode: FilterMatchMode.EQUALS },
       totalAmount: { value: null, matchMode: FilterMatchMode.EQUALS },
-      milestoneDescription: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      milestoneDescription: {
+        value: null,
+        matchMode: FilterMatchMode.CONTAINS,
+      },
       milestoneAmount: { value: null, matchMode: FilterMatchMode.EQUALS },
       deployedAt: { value: null, matchMode: FilterMatchMode.DATE_IS },
     });
-    setGlobalFilterValue('');
+    setGlobalFilterValue("");
   };
 
   const customSortIcon = ({ sortOrder }) => (
@@ -105,6 +134,7 @@ function ActiveContractsTable() {
       )}
     </span>
   );
+  let conversionRate = 380000;
 
   return (
     <PageLayout>
@@ -126,7 +156,7 @@ function ActiveContractsTable() {
               onClick={clearFilters}
               className="text-primary border-primary"
               tooltip="Clear filter"
-              tooltipOptions={{ position: 'bottom' }}
+              tooltipOptions={{ position: "bottom" }}
             />
           </div>
         </div>
@@ -138,9 +168,13 @@ function ActiveContractsTable() {
           filters={filters}
           filterDisplay="menu"
           onFilter={(e) => setFilters(e.filters)}
-          globalFilterFields={['contractName', 'producerName', 'milestoneDescription']}
+          globalFilterFields={[
+            "contractName",
+            "producerName",
+            "milestoneDescription",
+          ]}
           emptyMessage="No contracts found."
-          tableStyle={{ borderCollapse: 'collapse' }}
+          tableStyle={{ borderCollapse: "collapse" }}
           className="p-datatable-sm min-w-[900px] [&_.p-column-filter-menu-button]:text-white"
           stripedRows
           removableSort
@@ -158,7 +192,7 @@ function ActiveContractsTable() {
             headerClassName="bg-primary-border text-white font-semibold border"
           />
           <Column
-            field="contractName"
+            field="title"
             header="Contract Name"
             sortable
             filter
@@ -167,11 +201,69 @@ function ActiveContractsTable() {
             headerClassName="bg-primary-border text-white font-semibold border"
           />
           <Column
-            field="producerName"
+            field="producer.username"
             header="Producer"
             sortable
             filter
             filterPlaceholder="Search Producer"
+            bodyClassName="text-text border px-3 py-2"
+            headerClassName="bg-primary-border text-white font-semibold border"
+          />
+          <Column
+            field="totalAmount"
+            header="Total Subsidy (₹)"
+            sortable
+            filter
+            filterPlaceholder="Enter Amount"
+            body={(rowData) => `₹${rowData.totalAmount * conversionRate}`}
+            bodyClassName="text-text border px-3 py-2"
+            headerClassName="bg-primary-border text-white font-semibold border"
+          />
+          {/* <Column
+            field="milestoneDescription"
+            header="Milestone Description"
+            sortable
+            filter
+            filterPlaceholder="Search Milestone"
+            bodyClassName="text-text border px-3 py-2"
+            headerClassName="bg-primary-border text-white font-semibold border"
+          />
+          <Column
+            field="milestoneAmount"
+            header="Milestone Amount (₹)"
+            sortable
+            filter
+            filterPlaceholder="Enter Amount"
+            body={(rowData) => `₹ ${rowData.totalAmount * conversionRate}`}
+            bodyClassName="text-text border px-3 py-2"
+            headerClassName="bg-primary-border text-white font-semibold border"
+          /> */}
+          <Column
+            field="createdAt"
+            header="Activated Date"
+            sortable
+            filter
+            dataType="date"
+            filterElement={dateFilterTemplate}
+            body={(row) => {
+              const d = row.createdAt ? new Date(row.createdAt) : null;
+              return d && !isNaN(d) ? d.toLocaleDateString("en-GB") : "-";
+            }}
+            bodyClassName="text-text border px-3 py-2"
+            headerClassName="bg-primary-border text-white font-semibold border"
+          />
+
+          <Column
+            field="releasedAt"
+            header="Released Date"
+            sortable
+            filter
+            dataType="date"
+            filterElement={dateFilterTemplate}
+            body={(row) => {
+              const d = row.releasedAt ? new Date(row.releasedAt) : null;
+              return d && !isNaN(d) ? d.toLocaleDateString("en-GB") : "-";
+            }}
             bodyClassName="text-text border px-3 py-2"
             headerClassName="bg-primary-border text-white font-semibold border"
           />
@@ -187,58 +279,20 @@ function ActiveContractsTable() {
                 className="p-column-filter"
               />
             }
+            body={statusTemplate}
             bodyClassName="text-text border px-3 py-2"
             headerClassName="bg-primary-border text-white font-semibold border"
           />
-          <Column
-            field="totalAmount"
-            header="Total Subsidy (₹)"
-            sortable
-            filter
-            filterPlaceholder="Enter Amount"
-            bodyClassName="text-text border px-3 py-2"
-            headerClassName="bg-primary-border text-white font-semibold border"
-          />
-          <Column
-            field="milestoneDescription"
-            header="Milestone Description"
-            sortable
-            filter
-            filterPlaceholder="Search Milestone"
-            bodyClassName="text-text border px-3 py-2"
-            headerClassName="bg-primary-border text-white font-semibold border"
-          />
-          <Column
-            field="milestoneAmount"
-            header="Milestone Amount (₹)"
-            sortable
-            filter
-            filterPlaceholder="Enter Amount"
-            bodyClassName="text-text border px-3 py-2"
-            headerClassName="bg-primary-border text-white font-semibold border"
-          />
-          <Column
-            field="deployedAt"
-            header="Deployed Date"
-            sortable
-            filter
-            dataType="date"
-            filterElement={dateFilterTemplate}
-            body={(row) => row.deployedAt ? row.deployedAt.toLocaleDateString('en-GB') : '-'}
-            bodyClassName="text-text border px-3 py-2"
-            headerClassName="bg-primary-border text-white font-semibold border"
-          />
+
           <Column
             header="Actions"
             body={(row) => (
               <Button
-                icon="pi pi-eye"
-                rounded
-                outlined
-                className="p-button-primary"
+                label="View"
+                className="p-button-primary p-button-sm"
                 onClick={() => navigate(`/contracts/${row._id}`)}
                 tooltip="View Details"
-                tooltipOptions={{ position: 'top' }}
+                tooltipOptions={{ position: "top" }}
               />
             )}
             bodyClassName="text-center border px-3 py-2"

@@ -129,8 +129,21 @@ async function releaseMilestone(req, res) {
 	}
 }
 
+async function fetchActiveContracts(req, res) {
+	try {
+		const contracts = await SubsidyModel.find({ isActive: true })
+			.populate('producer')
+			.populate('government');
+		return res.json({ success: true, data: contracts });
+	} catch (err) {
+		console.error(err);
+		return res.status(500).json({ success: false, message: err.message });
+	}
+}
+
 module.exports = {
 	fetchAllProducers,
 	createContract,
 	releaseMilestone,
+	fetchActiveContracts,
 };
