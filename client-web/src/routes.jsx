@@ -8,6 +8,7 @@ import CreateSmartContract from './pages/government/create-smart-contract';
 import GovernmentDashboard from './pages/government/dashboard';
 import ActiveContractsTable from './pages/government/active-contracts';
 import MySubsidies from './pages/Producers/MySubsidies';
+import MilestoneForm from './pages/Producers/MilestoneForm';
 import ProducerDashboard from './pages/Producers/ProducerDashboard';
 
 const routes = createBrowserRouter([
@@ -47,8 +48,9 @@ const routes = createBrowserRouter([
 		errorElement: <ErrorElement />,
 		children: [
 			{ path: 'registration', element: <Registration /> },
-			{ path: 'subsidies', element: <MySubsidies /> },
 			{ path: 'dashboard', element: <ProducerDashboard /> },
+			{ path: 'subsidies', element: <MySubsidies /> },
+			{ path: 'milestone-form/:subsidyId', element: <MilestoneForm /> },
 		],
 	},
 
