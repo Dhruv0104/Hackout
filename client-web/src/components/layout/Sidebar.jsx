@@ -12,6 +12,7 @@ import {
 	MessageSquareHeart,
 	SquarePen,
 	ReceiptText,
+	Verified,
 } from 'lucide-react';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { FaChalkboardTeacher, FaFileAlt } from 'react-icons/fa';
@@ -53,6 +54,19 @@ export default function Sidebar({ isVisible, onClose }) {
 				label: 'My Subsidies',
 				icon: <FaFileAlt size={23} />,
 				route: '/producer/subsidies',
+			},
+		],
+
+		auditor: [
+			{
+				label: 'Dashboard',
+				icon: <LayoutDashboard size={23} />,
+				route: '/auditor/dashboard',
+			},
+			{
+				label: 'Verify Milestones',
+				icon: <Verified size={23} />,
+				route: '/auditor/verify-milestones',
 			},
 		],
 	};

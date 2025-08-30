@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, useParams } from 'react-router-dom';
 import { loginLoader, verifyLoader } from './loaders/verify.loader';
 import ErrorElement from './components/ErrorElement';
 // import Home from './pages/Home';
@@ -9,6 +9,9 @@ import GovernmentDashboard from './pages/government/dashboard';
 import ActiveContractsTable from './pages/government/active-contracts';
 import MySubsidies from './pages/Producers/MySubsidies';
 import ProducerDashboard from './pages/Producers/ProducerDashboard';
+import AuditorDashboard from './pages/auditors/AuditorDashboard';
+import VerifyMilestones from './pages/auditors/VerifyMilestones';
+import LogViewer from './pages/auditors/LogViewer';
 
 const routes = createBrowserRouter([
 	{
@@ -58,6 +61,14 @@ const routes = createBrowserRouter([
 			{ path: 'create-smart-contract', element: <CreateSmartContract /> },
 			{ path: 'dashboard', element: <GovernmentDashboard /> },
 			{ path: 'active-contracts', element: <ActiveContractsTable /> },
+		],
+	},
+	{
+		path: '/auditor',
+		children: [
+			{ path: 'dashboard', element: <AuditorDashboard /> },
+			{ path: 'verify-milestones', element: <VerifyMilestones /> },
+			{ path: 'log-viewer/:contractId', element: <LogViewer /> },
 		],
 	},
 	// Catch all

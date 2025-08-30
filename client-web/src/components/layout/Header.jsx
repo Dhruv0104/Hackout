@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
-// import logo from '../../images/skillScript.png';
+import logo from '../../assets/logo.png';
 
 export default function Header({ onToggleSidebar }) {
 	const navigate = useNavigate();
@@ -29,9 +29,9 @@ export default function Header({ onToggleSidebar }) {
 					onClick={onToggleSidebar}
 					aria-label="Toggle Menu"
 				/>
-				{/* <Avatar image={logo} size="xlarge" shape="circle" className="w-12 h-12 my-auto" /> */}
+				<Avatar image={logo} size="xlarge" shape="circle" className="w-12 h-12 my-auto" />
 				<h1 className="text-2xl sm:text-3xl font-bold text-sky-800 truncate my-auto">
-					SkillScript
+					SubsidyTrack
 				</h1>
 			</div>
 

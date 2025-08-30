@@ -72,8 +72,8 @@ const Login = () => {
 	return (
 		<>
 			<Toast ref={toast} />
-			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-white to-gray-100 px-4">
-				<h1 className="text-4xl font-extrabold text-[#336699] mb-16 tracking-wide drop-shadow-sm overflow-hidden whitespace-nowrap border-r-4 border-[#336699] animate-typing">
+			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 via-white to-gray-100 px-4">
+				<h1 className="text-4xl font-extrabold text-primary mb-16 tracking-wide drop-shadow-sm overflow-hidden whitespace-nowrap border-r-4 border-primary animate-typing">
 					Subsidy<span className="text-gray-800">Track</span>
 				</h1>
 
@@ -87,9 +87,9 @@ const Login = () => {
 						/>
 					</div>
 
-					<h2 className="text-3xl font-bold text-[#336699] text-center my-10">Login</h2>
+					<h2 className="text-3xl font-bold text-primary text-center my-10">Login</h2>
 					<div className="mb-4">
-						<label htmlFor="role" className="block text-[#336699] font-medium mb-1">
+						<label htmlFor="role" className="block text-primary font-medium mb-1">
 							Role
 						</label>
 						<Dropdown
@@ -102,7 +102,7 @@ const Login = () => {
 						/>
 					</div>
 					<div className="mb-4">
-						<label htmlFor="username" className="block text-[#336699] font-medium mb-1">
+						<label htmlFor="username" className="block text-primary font-medium mb-1">
 							Username
 						</label>
 						<InputText
@@ -110,12 +110,12 @@ const Login = () => {
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
 							placeholder="Enter your username"
-							className="w-full p-3 rounded border border-gray-300 transition-all focus:ring-2 focus:ring-[#336699] hover:border-[#336699]"
+							className="w-full p-3 rounded border border-gray-300 transition-all focus:ring-2 focus:ring-primary hover:border-primary"
 						/>
 					</div>
 
 					<div className="mb-4">
-						<label htmlFor="password" className="block text-[#336699] font-medium mb-1">
+						<label htmlFor="password" className="block text-primary font-medium mb-1">
 							Password
 						</label>
 						<InputText
@@ -124,7 +124,7 @@ const Login = () => {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							placeholder="Enter your password"
-							className="w-full p-3 rounded border border-gray-300 transition-all focus:ring-2 focus:ring-[#336699] hover:border-[#336699]"
+							className="w-full p-3 rounded border border-gray-300 transition-all focus:ring-2 focus:ring-primary hover:border-primary"
 						/>
 					</div>
 
@@ -132,7 +132,7 @@ const Login = () => {
 						label={<div className="text-white font-semibold">Login</div>}
 						onClick={handleLogin}
 						loading={loading}
-						className="w-full bg-[#336699] hover:bg-[#2a547a] transition text-white font-semibold py-2.5 rounded shadow-sm transform hover:scale-105"
+						className="w-full bg-primary hover:bg-[#2a547a] transition text-white font-semibold py-2.5 rounded shadow-sm transform hover:scale-105"
 					/>
 
 					<div className="mt-4 flex flex-col items-end gap-2">
@@ -144,7 +144,7 @@ const Login = () => {
 								</span>
 							}
 							onClick={handleForgotPassword}
-							className="text-[#336699] hover:text-[#2a547a] bg-transparent border-none px-1 py-0 font-medium transform hover:scale-105 focus:ring-2 focus:ring-[#336699] rounded"
+							className="text-primary hover:text-[#2a547a] bg-transparent border-none px-1 py-0 font-medium transform hover:scale-105 focus:ring-2 focus:ring-primary rounded"
 							text
 						/>
 					</div>
