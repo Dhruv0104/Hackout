@@ -7,6 +7,8 @@ import Registration from './pages/Producers/Registration';
 import CreateSmartContract from './pages/government/create-smart-contract';
 import GovernmentDashboard from './pages/government/dashboard';
 import ActiveContractsTable from './pages/government/active-contracts';
+import MySubsidies from './pages/Producers/MySubsidies';
+import ProducerDashboard from './pages/Producers/ProducerDashboard';
 
 const routes = createBrowserRouter([
 	{
@@ -45,21 +47,17 @@ const routes = createBrowserRouter([
 		errorElement: <ErrorElement />,
 		children: [
 			{ path: 'registration', element: <Registration /> },
-			// { path: 'institute', element: <InstituteList /> },
-			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
-			// {
-			// 	path: 'institute/:instituteId/department/:departmentId',
-			// 	element: <FacultyAndStudentList />,
-			// },
+			{ path: 'subsidies', element: <MySubsidies /> },
+			{ path: 'dashboard', element: <ProducerDashboard /> },
 		],
 	},
 
 	{
 		path: '/government',
 		children: [
-			{path: 'create-smart-contract', element: <CreateSmartContract />},
-			{path: 'dashboard', element: <GovernmentDashboard />},
-			{path: 'active-contracts', element: <ActiveContractsTable />},
+			{ path: 'create-smart-contract', element: <CreateSmartContract /> },
+			{ path: 'dashboard', element: <GovernmentDashboard /> },
+			{ path: 'active-contracts', element: <ActiveContractsTable /> },
 		],
 	},
 	// Catch all

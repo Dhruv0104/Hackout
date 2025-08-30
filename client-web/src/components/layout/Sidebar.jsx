@@ -42,6 +42,19 @@ export default function Sidebar({ isVisible, onClose }) {
 				route: '/government/active-contracts',
 			},
 		],
+
+		producer: [
+			{
+				label: 'Dashboard',
+				icon: <LayoutDashboard size={23} />,
+				route: '/producer/dashboard',
+			},
+			{
+				label: 'My Subsidies',
+				icon: <FaFileAlt size={23} />,
+				route: '/producer/subsidies',
+			},
+		],
 	};
 
 	const handleLogout = async () => {
