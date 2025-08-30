@@ -142,9 +142,124 @@ async function fetchActiveContracts(req, res) {
 	}
 }
 
+async function dashboard(req, res) {
+	try {
+		const subsidyCount = await SubsidyModel.countDocuments();
+		const producerCount = await ProducerModel.countDocuments();
+		const totalSubsidyCompleted = await SubsidyModel.countDocuments({ status: 'Completed' });
+		const producers = await ProducerModel.find();
+		let totalAmountDisbursed = ethers.toBigInt(0);
+		for (const p of producers) {
+			if (p.walletAddress) {
+				const bal = await provider.getBalance(p.walletAddress);
+				totalAmountDisbursed += bal;
+			}
+		}
+		const governmentAddress = '0x102fa63eCEF7fcE38a9259AE9B7789b46AEE88e2';
+		const currentAmount = await provider.getBalance(governmentAddress);
+		const subsidies = await SubsidyModel.find({ isActive: true });
+		let totalPendingAmount = ethers.toBigInt(0);
+		for (const s of subsidies) {
+			if (s.contractAddress) {
+				const bal = await provider.getBalance(s.contractAddress);
+				totalPendingAmount += bal;
+			}
+		}
+
+		// --- Chart 1: Total amount allocated vs distributed per month ---
+		const amountPerMonth = await SubsidyModel.aggregate([
+			{
+				$group: {
+					_id: {
+						year: { $year: '$createdAt' },
+						month: { $month: '$createdAt' },
+					},
+					totalAllocated: { $sum: '$totalAmount' },
+					totalDistributed: {
+						$sum: {
+							$sum: {
+								$map: {
+									input: '$milestones',
+									as: 'm',
+									in: {
+										$cond: ['$$m.isReleased', '$$m.amount', 0],
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			{ $sort: { '_id.year': 1, '_id.month': 1 } },
+		]);
+
+		// --- Chart 2: Contract status distribution (pie chart) ---
+		const statusDistribution = await SubsidyModel.aggregate([
+			{ $match: { status: { $in: ['InProgress', 'Completed'] } } },
+			{ $group: { _id: '$status', count: { $sum: 1 } } },
+		]);
+
+		// --- Chart 3: Total subsidy allocated per month ---
+		const subsidyAllocatedPerMonth = await SubsidyModel.aggregate([
+			{
+				$group: {
+					_id: {
+						year: { $year: '$createdAt' },
+						month: { $month: '$createdAt' },
+					},
+					totalAllocated: { $sum: '$totalAmount' },
+				},
+			},
+			{ $sort: { '_id.year': 1, '_id.month': 1 } },
+		]);
+
+		// --- Chart 4: Number of producers applying for subsidy per month ---
+		const producersPerMonth = await SubsidyModel.aggregate([
+			{
+				$group: {
+					_id: {
+						year: { $year: '$createdAt' },
+						month: { $month: '$createdAt' },
+					},
+					producers: { $addToSet: '$producer' },
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					count: { $size: '$producers' },
+				},
+			},
+			{ $sort: { '_id.year': 1, '_id.month': 1 } },
+		]);
+
+		return res.json({
+			success: true,
+			data: {
+				subsidyCount,
+				producerCount,
+				totalSubsidyCompleted,
+				totalAmountDisbursed: ethers.formatEther(totalAmountDisbursed),
+				currentAmount: ethers.formatEther(currentAmount),
+				totalPendingAmount: ethers.formatEther(totalPendingAmount),
+				charts: {
+					amountPerMonth,
+					statusDistribution,
+					subsidyAllocatedPerMonth,
+					producersPerMonth,
+				},
+			},
+		});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).json({ success: false, message: err.message });
+	}
+}
+
 module.exports = {
 	fetchAllProducers,
 	createContract,
 	releaseMilestone,
 	fetchActiveContracts,
+	dashboard,
 };
