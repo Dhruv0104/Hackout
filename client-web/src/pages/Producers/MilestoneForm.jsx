@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Formik, Form, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import PageLayout from '../../components/layout/PageLayout';
-import { fetchGet, fetchPost } from '../../utils/fetch.utils';
+import { fetchGet } from '../../utils/fetch.utils';
 
 const validationSchema = Yup.object({
 	milestone: Yup.string().required('Milestone is required'),
-	producedQuantity: Yup.string().required('Produced Quantity is required'),
+	description: Yup.string().required('Produced Quantity is required'),
 	files: Yup.mixed().required('Proof/Report file is required'),
 });
 
@@ -39,31 +39,9 @@ export default function MilestoneForm() {
 		fetchMilestones();
 	}, [subsidyId]);
 
-	const handleSubmit = async (values, { resetForm }) => {
-		try {
-			const formData = new FormData();
-			formData.append('milestoneId', values.milestone);
-			formData.append('producedQuantity', values.producedQuantity);
-			formData.append('file', values.files);
-
-			console.log('values: ', values);
-
-			// const response = await fetchPost({
-			// 	pathName: `producer/submit-milestone/${subsidyId}`,
-			// 	body: formData,
-			// 	isFormData: true,
-			// });
-
-			// if (response.success) {
-			// 	alert('Milestone submitted successfully.');
-			// 	resetForm();
-			// } else {
-			// 	alert(response.message || 'Submission failed.');
-			// }
-		} catch (err) {
-			console.error(err);
-			alert('Error submitting milestone.');
-		}
+	const handleSubmit = (values) => {
+		console.log('Submitted Data:', values);
+		alert('Milestone submitted successfully.');
 	};
 
 	const baseInputClasses =
@@ -74,7 +52,7 @@ export default function MilestoneForm() {
 			<div className="p-6 max-w-2xl mx-auto bg-white shadow rounded-2xl">
 				<h2 className="text-2xl font-bold mb-4 text-primary">Submit Milestone Report</h2>
 				<Formik
-					initialValues={{ milestone: '', producedQuantity: '', files: null }}
+					initialValues={{ milestone: '', description: '', files: null }}
 					validationSchema={validationSchema}
 					onSubmit={handleSubmit}
 				>
@@ -90,7 +68,7 @@ export default function MilestoneForm() {
 									placeholder="Choose milestone"
 									onChange={(e) => setFieldValue('milestone', e.value)}
 									onBlur={handleBlur}
-									className="w-full rounded border border-gray-300 transition-all focus-within:ring-2 focus-within:ring-primary hover:border-primary"
+									className="w-full rounded border border-gray-300 transition-all focus-within:shadow-none focus-within:ring-2 focus-within:ring-primary hover:border-primary"
 								/>
 								<ErrorMessage
 									name="milestone"
@@ -102,20 +80,20 @@ export default function MilestoneForm() {
 							<div>
 								<label className="block mb-1 font-medium">Produced Quantity</label>
 								<InputText
-									id="producedQuantity"
-									name="producedQuantity"
-									value={values.producedQuantity}
+									id="description"
+									name="description"
+									value={values.description}
 									onChange={handleChange}
 									onBlur={handleBlur}
 									placeholder="Enter produced quantity"
 									className={`${baseInputClasses} ${
-										errors.producedQuantity && touched.producedQuantity
+										errors.description && touched.description
 											? 'ring-2 ring-red-400 border-red-400'
 											: ''
 									}`}
 								/>
 								<ErrorMessage
-									name="producedQuantity"
+									name="description"
 									component="div"
 									className="text-red-500 text-sm mt-1"
 								/>
@@ -132,7 +110,11 @@ export default function MilestoneForm() {
 									maxFileSize={5000000}
 									auto
 									chooseLabel="Upload"
-									className="w-full"
+									className={`${baseInputClasses} ${
+										errors.files && touched.files
+											? 'ring-2 ring-red-400 border-red-400'
+											: ''
+									}`}
 									customUpload
 									uploadHandler={(e) => setFieldValue('files', e.files[0])}
 								/>
