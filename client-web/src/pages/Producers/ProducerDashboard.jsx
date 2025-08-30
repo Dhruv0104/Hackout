@@ -1,5 +1,4 @@
-// GovernmentDashboard.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	PieChart,
 	Pie,
@@ -11,117 +10,76 @@ import {
 	XAxis,
 	YAxis,
 	Legend,
-	AreaChart,
-	Area,
-	CartesianGrid,
 	LineChart,
 	Line,
+	CartesianGrid,
 } from 'recharts';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { FaFileContract, FaMoneyBillWave, FaUsers, FaClock } from 'react-icons/fa';
 import PageLayout from '../../components/layout/PageLayout';
+import { fetchGet } from '../../utils/fetch.utils';
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
-const COLORS = ['#FFC107', '#4CAF50', '#F44336']; // Pending, Completed, Failed
+const COLORS = ['#FFC107', '#4CAF50', '#F44336'];
 
-// Mock Data
-const contractsMock = [
-	{
-		id: 1,
-		name: 'Green Hydrogen Q1',
-		producer: 'Producer 1',
-		totalAmount: 100000,
-		status: 'Pending',
-		milestones: [
-			{ description: 'Setup plant', amount: 50000, verified: false },
-			{ description: 'Production start', amount: 50000, verified: false },
-		],
-	},
-	{
-		id: 2,
-		name: 'Blue Carbon Project',
-		producer: 'Producer 2',
-		totalAmount: 80000,
-		status: 'Completed',
-		milestones: [{ description: 'Initial survey', amount: 80000, verified: true }],
-	},
-	{
-		id: 3,
-		name: 'Solar Panel Initiative',
-		producer: 'Producer 3',
-		totalAmount: 120000,
-		status: 'Pending',
-		milestones: [
-			{ description: 'Panels installed', amount: 60000, verified: false },
-			{ description: 'Testing', amount: 60000, verified: false },
-		],
-	},
-	{
-		id: 4,
-		name: 'Wind Energy Project',
-		producer: 'Producer 4',
-		totalAmount: 90000,
-		status: 'Pending',
-		milestones: [
-			{ description: 'Installation', amount: 45000, verified: false },
-			{ description: 'Testing', amount: 45000, verified: false },
-		],
-	},
-	{
-		id: 5,
-		name: 'Biofuel Initiative',
-		producer: 'Producer 5',
-		totalAmount: 70000,
-		status: 'Completed',
-		milestones: [{ description: 'Setup', amount: 70000, verified: true }],
-	},
-];
+const ProducerDashboard = ({ producerId }) => {
+	const [cards, setCards] = useState(null);
+	const [graphs, setGraphs] = useState(null);
 
-const milestoneData = [
-	{ month: 'Jan', completedMilestones: 5, totalMilestones: 10 },
-	{ month: 'Feb', completedMilestones: 8, totalMilestones: 12 },
-	{ month: 'Mar', completedMilestones: 10, totalMilestones: 12 },
-	{ month: 'Apr', completedMilestones: 12, totalMilestones: 15 },
-	{ month: 'May', completedMilestones: 14, totalMilestones: 15 },
-];
+	useEffect(() => {
+		async function loadData() {
+			const producerId = localStorage.getItem('_id');
+			const res = await fetchGet({ pathName: `producer/dashboard/${producerId}` });
+			if (res?.success) {
+				const factor = 380000;
 
-const subsidyData = [
-	{ month: 'Jan', deployed: 50000, approved: 100000 },
-	{ month: 'Feb', deployed: 80000, approved: 120000 },
-	{ month: 'Mar', deployed: 100000, approved: 120000 },
-	{ month: 'Apr', deployed: 120000, approved: 150000 },
-	{ month: 'May', deployed: 140000, approved: 150000 },
-];
+				// Scale card values
+				const scaledCards = {
+					...res.cards,
+					totalSubsidyApplied: res.cards.totalSubsidyApplied * factor,
+					totalPending: res.cards.totalPending * factor,
+					totalReceived: res.cards.totalReceived * factor,
+				};
 
-const ProducerDashboard = () => {
-	const [contracts] = useState(contractsMock);
+				// Scale graph values
+				const scaledGraphs = {
+					subsidyApplyArr: res.graphs.subsidyApplyArr.map((d) => ({
+						...d,
+						total: d.total * factor,
+					})),
+					statusArr: res.graphs.statusArr, // assuming counts only
+					amountTrackArr: res.graphs.amountTrackArr.map((d) => ({
+						...d,
+						released: d.released * factor,
+					})),
+				};
 
-	// Summary metrics
-	const totalContracts = contracts.length;
-	const totalSubsidy = contracts.reduce((sum, c) => sum + c.totalAmount, 0);
-	const producersCount = new Set(contracts.map((c) => c.producer)).size;
-	const pendingContracts = contracts.filter((c) => c.status === 'Pending').length;
-	const completedContracts = contracts.filter((c) => c.status === 'Completed').length;
+				setCards(scaledCards);
+				setGraphs(scaledGraphs);
+			}
+		}
+		loadData();
+	}, [producerId]);
 
-	// Pie chart data
-	const pieData = [
-		{ name: 'Pending', value: pendingContracts },
-		{ name: 'Completed', value: completedContracts },
-		{ name: 'Failed', value: 0 },
-	];
+	// const handleExportExcel = () => {
+	// 	const data = [
+	// 		{ Metric: "Total Contracts", Value: cards.totalContracts },
+	// 		{ Metric: "Total Subsidy Applied", Value: cards.totalSubsidyApplied },
+	// 		{ Metric: "Total Pending", Value: cards.totalPending },
+	// 		{ Metric: "Total Received", Value: cards.totalReceived },
+	// 	];
 
-	// Horizontal Bar Chart for Top Producers
-	const topN = 5;
-	const sorted = [...contracts].sort((a, b) => b.totalAmount - a.totalAmount);
-	const topProducers = sorted.slice(0, topN);
-	const othersTotal = sorted.slice(topN).reduce((sum, c) => sum + c.totalAmount, 0);
-	const barData = [
-		...topProducers.map((c) => ({
-			producer: c.producer,
-			subsidy: c.totalAmount,
-		})),
-		...(othersTotal > 0 ? [{ producer: 'Others', subsidy: othersTotal }] : []),
-	];
+	// 	const ws = XLSX.utils.json_to_sheet(data);
+	// 	const wb = XLSX.utils.book_new();
+	// 	XLSX.utils.book_append_sheet(wb, ws, "Dashboard");
+
+	// 	const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+	// 	saveAs(new Blob([wbout], { type: "application/octet-stream" }), "ProducerDashboard.xlsx");
+	// };
+
+	if (!cards || !graphs) return <p className="p-6 text-gray-600">Loading dashboard...</p>;
 
 	return (
 		<PageLayout>
@@ -129,16 +87,17 @@ const ProducerDashboard = () => {
 				{/* Header */}
 				<div className="flex justify-between items-center mb-8">
 					<h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
-						Government Dashboard
+						Producer Dashboard
 					</h1>
-					<Button
+					{/* <Button
 						label="Export Report"
 						icon="pi pi-download"
 						className="p-button-sm p-button-success shadow-md"
-					/>
+						onClick={handleExportExcel}
+					/> */}
 				</div>
 
-				{/* Summary Cards */}
+				{/* Cards */}
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
 					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-green-100 to-green-200">
 						<div className="flex items-center space-x-4">
@@ -146,7 +105,7 @@ const ProducerDashboard = () => {
 							<div>
 								<p className="text-lg font-semibold">Total Contracts</p>
 								<h2 className="text-3xl font-bold text-green-800">
-									{totalContracts}
+									{cards.totalContracts}
 								</h2>
 							</div>
 						</div>
@@ -156,21 +115,9 @@ const ProducerDashboard = () => {
 						<div className="flex items-center space-x-4">
 							<FaMoneyBillWave className="text-blue-700 text-4xl" />
 							<div>
-								<p className="text-lg font-semibold">Total Subsidy</p>
+								<p className="text-lg font-semibold">Total Subsidy Applied</p>
 								<h2 className="text-3xl font-bold text-blue-800">
-									₹{totalSubsidy.toLocaleString()}
-								</h2>
-							</div>
-						</div>
-					</Card>
-
-					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-purple-100 to-purple-200">
-						<div className="flex items-center space-x-4">
-							<FaUsers className="text-purple-700 text-4xl" />
-							<div>
-								<p className="text-lg font-semibold">Producers Involved</p>
-								<h2 className="text-3xl font-bold text-purple-800">
-									{producersCount}
+									₹{cards.totalSubsidyApplied.toLocaleString()}
 								</h2>
 							</div>
 						</div>
@@ -180,114 +127,78 @@ const ProducerDashboard = () => {
 						<div className="flex items-center space-x-4">
 							<FaClock className="text-yellow-700 text-4xl" />
 							<div>
-								<p className="text-lg font-semibold">Pending Contracts</p>
+								<p className="text-lg font-semibold">Total Pending Subsidy</p>
 								<h2 className="text-3xl font-bold text-yellow-800">
-									{pendingContracts}
+									₹{cards.totalPending.toLocaleString()}
+								</h2>
+							</div>
+						</div>
+					</Card>
+
+					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-purple-100 to-purple-200">
+						<div className="flex items-center space-x-4">
+							<FaUsers className="text-purple-700 text-4xl" />
+							<div>
+								<p className="text-lg font-semibold">Total Received</p>
+								<h2 className="text-3xl font-bold text-purple-800">
+									₹{cards.totalReceived.toLocaleString()}
 								</h2>
 							</div>
 						</div>
 					</Card>
 				</div>
 
-				{/* Charts */}
+				{/* Graphs */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-					{/* Pie Chart */}
 					<Card className="rounded-2xl shadow-lg">
-						<h3 className="text-xl font-bold mb-4">Contracts Status</h3>
-						<ResponsiveContainer width="100%" height={250}>
-							<PieChart>
-								<Pie
-									data={pieData}
-									dataKey="value"
-									nameKey="name"
-									cx="50%"
-									cy="50%"
-									outerRadius={90}
-									label
-								>
-									{pieData.map((entry, index) => (
-										<Cell
-											key={`cell-${index}`}
-											fill={COLORS[index % COLORS.length]}
-										/>
-									))}
-								</Pie>
+						<h3 className="text-xl font-bold mb-4">Subsidy Applied per Month</h3>
+						<ResponsiveContainer width="100%" height={300}>
+							<LineChart data={graphs.subsidyApplyArr}>
+								<XAxis dataKey="month" />
+								<YAxis />
 								<Tooltip />
-							</PieChart>
+								<Legend />
+								<Line
+									type="monotone"
+									dataKey="total"
+									stroke="#4CAF50"
+									strokeWidth={3}
+								/>
+							</LineChart>
 						</ResponsiveContainer>
 					</Card>
 
-					{/* Bar Chart */}
 					<Card className="rounded-2xl shadow-lg">
-						<h3 className="text-xl font-bold mb-4">Top Producers Subsidy</h3>
-						<ResponsiveContainer
-							width="100%"
-							height={Math.max(50 * barData.length, 300)}
-						>
-							<BarChart
-								layout="vertical"
-								data={barData}
-								margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-							>
-								<XAxis type="number" />
-								<YAxis dataKey="producer" type="category" width={120} />
+						<h3 className="text-xl font-bold mb-4">Subsidy Status per Month</h3>
+						<ResponsiveContainer width="100%" height={300}>
+							<BarChart data={graphs.statusArr}>
+								<XAxis dataKey="month" />
+								<YAxis />
 								<Tooltip />
 								<Legend />
-								<Bar dataKey="subsidy" fill="#4CAF50" radius={[8, 8, 0, 0]} />
+								<Bar dataKey="Created" stackId="a" fill="#FFC107" />
+								<Bar dataKey="Funded" stackId="a" fill="#2196F3" />
+								<Bar dataKey="InProgress" stackId="a" fill="#FF9800" />
+								<Bar dataKey="Completed" stackId="a" fill="#4CAF50" />
 							</BarChart>
 						</ResponsiveContainer>
 					</Card>
 				</div>
 
-				{/* Milestone & Subsidy Trend */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+				<div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-10">
 					<Card className="rounded-2xl shadow-lg">
-						<h3 className="text-xl font-bold mb-4">Milestone Completion</h3>
+						<h3 className="text-xl font-bold mb-4">Amount Released per Month</h3>
 						<ResponsiveContainer width="100%" height={300}>
-							<AreaChart data={milestoneData}>
-								<defs>
-									<linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
-										<stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8} />
-										<stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
-									</linearGradient>
-								</defs>
+							<LineChart data={graphs.amountTrackArr}>
 								<XAxis dataKey="month" />
 								<YAxis />
-								<CartesianGrid strokeDasharray="3 3" />
-								<Tooltip />
-								<Area
-									type="monotone"
-									dataKey="completedMilestones"
-									stroke="#4CAF50"
-									fillOpacity={1}
-									fill="url(#colorCompleted)"
-								/>
-							</AreaChart>
-						</ResponsiveContainer>
-					</Card>
-
-					<Card className="rounded-2xl shadow-lg">
-						<h3 className="text-xl font-bold mb-4">Subsidy Utilization</h3>
-						<ResponsiveContainer width="100%" height={300}>
-							<LineChart data={subsidyData}>
-								<XAxis dataKey="month" />
-								<YAxis />
-								<CartesianGrid strokeDasharray="3 3" />
 								<Tooltip />
 								<Legend />
 								<Line
 									type="monotone"
-									dataKey="deployed"
-									stroke="#4CAF50"
+									dataKey="released"
+									stroke="#673AB7"
 									strokeWidth={3}
-									dot={{ r: 5 }}
-								/>
-								<Line
-									type="monotone"
-									dataKey="approved"
-									stroke="#FFC107"
-									strokeWidth={3}
-									dot={{ r: 5 }}
 								/>
 							</LineChart>
 						</ResponsiveContainer>

@@ -14,5 +14,6 @@ router.post(
 	upload.single('file'),
 	asyncRouteHandler(producerController.submitMilestone)
 );
+router.get('/dashboard/:id', asyncRouteHandler(producerController.getProducerDashboard));
 
 module.exports = router;
