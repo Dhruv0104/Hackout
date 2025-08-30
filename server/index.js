@@ -13,11 +13,7 @@ const { errorHandler, asyncRouteHandler } = require('./utils/route.utils');
 
 // include routes here
 const authRoutes = require('./routes/auth.route');
-// const facultyRoutes = require('./routes/faculty.route');
-// const studentRoutes = require('./routes/student.route');
-// const subjectRoutes = require('./routes/subject.route');
-// const adminRoutes = require('./routes/admin.route');
-// const hodRoutes = require('./routes/hod.route');
+const governmentRoutes = require('./routes/government.route');
 
 const app = express();
 
@@ -42,11 +38,7 @@ app.use(
 // 	res.json({ message: 'Welcome to the server!' });
 // });
 app.use('/auth', authRoutes);
-// app.use('/faculty', facultyRoutes);
-// app.use('/student', studentRoutes);
-// app.use('/subject', subjectRoutes);
-// app.use('/admin', adminRoutes);
-// app.use('/hod', hodRoutes);
+app.use('/government', governmentRoutes);
 
 app.use(errorHandler);
 

@@ -7,6 +7,7 @@ const governmentSchema = new mongoose.Schema({
 	walletAddress: { type: String, required: true }, // blockchain wallet
 	privateKey: { type: String, required: true }, // blockchain wallet
 	createdAt: { type: Date, default: Date.now },
+	isActive: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model('governments', governmentSchema);

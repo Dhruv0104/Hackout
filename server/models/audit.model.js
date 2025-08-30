@@ -8,6 +8,7 @@ const auditorSchema = new mongoose.Schema({
 	walletAddress: { type: String, required: true },
 	privateKey: { type: String, required: true },
 	createdAt: { type: Date, default: Date.now },
+	isActive: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model('auditors', auditorSchema);

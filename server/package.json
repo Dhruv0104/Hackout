@@ -13,5 +13,9 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "hardhat": "^3.0.3"
   }
 }

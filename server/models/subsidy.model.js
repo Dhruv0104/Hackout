@@ -22,6 +22,7 @@ const subsidySchemeSchema = new mongoose.Schema({
 		default: 'Created',
 	},
 	createdAt: { type: Date, default: Date.now },
+	isActive: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model('subsidies', subsidySchemeSchema);

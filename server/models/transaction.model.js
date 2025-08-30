@@ -7,6 +7,7 @@ const transactionSchema = new mongoose.Schema({
 	actionType: { type: String }, // e.g., "FundDeposited", "MilestoneCompleted", "AuditApproved", "FundsReleased"
 	transactionHash: { type: String }, // blockchain tx hash
 	timestamp: { type: Date, default: Date.now },
+	isActive: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model('transactions', transactionSchema);
