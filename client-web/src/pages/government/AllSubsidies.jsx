@@ -6,7 +6,6 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { InputNumber } from 'primereact/inputnumber';
-import { Dialog } from 'primereact/dialog';
 import { ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide, Eye } from 'lucide-react';
 import PageLayout from '../../components/layout/PageLayout';
 import { fetchGet } from '../../utils/fetch.utils';
@@ -262,36 +261,6 @@ export default function VerifyMilestones() {
 						headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
 					/>
 				</DataTable>
-				{/* Contract Details Modal */}
-				<Dialog
-					header="Contract Details"
-					visible={isContractModalVisible}
-					style={{ width: '50vw', maxWidth: '700px' }}
-					modal
-					onHide={() => setIsContractModalVisible(false)}
-				>
-					{selectedContract ? (
-						<div className="space-y-2 text-gray-800">
-							<p>
-								<strong>Project:</strong> {selectedContract.projectName}
-							</p>
-							<p>
-								<strong>Company:</strong> {selectedContract.companyName}
-							</p>
-							<p>
-								<strong>Milestone:</strong> {selectedContract.milestone}
-							</p>
-							<p>
-								<strong>Subsidy Amount:</strong> ${selectedContract.subsidyAmount}
-							</p>
-							<p>
-								<strong>Status:</strong> {selectedContract.status}
-							</p>
-						</div>
-					) : (
-						<p>No contract selected</p>
-					)}
-				</Dialog>
 			</div>
 		</PageLayout>
 	);

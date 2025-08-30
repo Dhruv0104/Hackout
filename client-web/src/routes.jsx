@@ -13,6 +13,7 @@ import ProducerDashboard from './pages/Producers/ProducerDashboard';
 import AuditorDashboard from './pages/auditors/AuditorDashboard';
 import VerifyMilestones from './pages/auditors/VerifyMilestones';
 import LogViewer from './pages/auditors/LogViewer';
+import Milestones from './pages/Producers/milestones';
 
 const routes = createBrowserRouter([
 	{
@@ -54,6 +55,7 @@ const routes = createBrowserRouter([
 			{ path: 'dashboard', element: <ProducerDashboard /> },
 			{ path: 'subsidies', element: <MySubsidies /> },
 			{ path: 'milestone-form/:subsidyId', element: <MilestoneForm /> },
+			{ path: 'fetch-milestones/:id', element: <Milestones /> },
 		],
 	},
 

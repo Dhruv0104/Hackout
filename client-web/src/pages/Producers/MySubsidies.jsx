@@ -39,11 +39,11 @@ export default function MySubsidies() {
 
 	const statusTemplate = (rowData) => {
 		let statusClass =
-			rowData.status === 'Approved'
-				? 'bg-green-100 text-green-700'
+			rowData.status === 'Funded'
+				? 'bg-blue-100 text-blue-700'
 				: rowData.status === 'InProgress'
 				? 'bg-yellow-100 text-yellow-700'
-				: 'bg-red-100 text-red-700';
+				: 'bg-green-100 text-green-700';
 
 		return (
 			<span className={`px-3 py-1 rounded-full text-sm font-medium ${statusClass}`}>
@@ -56,8 +56,7 @@ export default function MySubsidies() {
 		if (rowData.status === 'InProgress') {
 			return (
 				<Button
-					label="Submit Milestone"
-					icon="pi pi-upload"
+					label="Submit"
 					className="p-button-sm p-button-success text-white"
 					onClick={() => navigate(`/producer/milestone-form/${rowData._id}`)}
 				/>
@@ -65,10 +64,9 @@ export default function MySubsidies() {
 		} else {
 			return (
 				<Button
-					label="View"
-					icon="pi pi-eye"
-					className="p-button-sm p-button-outlined text-primary"
-					onClick={() => alert(`Viewing subsidy: ${rowData.title}`)}
+					label={<div className="text-center">View</div>}
+					className="p-button-sm px-5"
+					onClick={() => navigate(`/producer/fetch-milestones/${rowData._id}`)}
 				/>
 			);
 		}

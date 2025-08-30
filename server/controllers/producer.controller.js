@@ -54,8 +54,16 @@ async function submitMilestone(req, res) {
 	}
 }
 
+async function fetchMilestones(req, res) {
+	const {id}=req.params;
+	const subsidy = await SubsidyModel.findById(id);
+	const submissions = await MilestoneSubmission.find({subsidy:id});
+	return res.json({ success: true, data: submissions, subsidy: subsidy });
+}
+
 module.exports = {
 	fetchAllSubsidies,
 	getSubsidyMilestones,
 	submitMilestone,
+	fetchMilestones,
 };
