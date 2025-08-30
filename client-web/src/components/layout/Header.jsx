@@ -42,20 +42,16 @@ export default function Header({ onToggleSidebar }) {
 				<span className="hidden sm:inline text-xl font-semibold text-primary truncate max-w-[100px] sm:max-w-xs">
 					{username || 'Guest'}
 				</span>
-				{/* <Avatar
+				<Avatar
 					shape="circle"
 					className="text-primary bg-gray-200 w-10 h-10"
-					icon={
-						role === 'STUDENT' && !userData?.profile?.url
-							? 'pi pi-user text-xl'
-							: 'pi pi-user text-xl'
-					}
-					image={
-						role === 'STUDENT' && userData?.profile?.url
-							? `${userData.profile.url}` // backend URL + stored path
-							: undefined
-					}
-				/> */}
+					icon={'pi pi-user text-xl'}
+					// image={
+					// 	role === 'STUDENT' && userData?.profile?.url
+					// 		? `${userData.profile.url}` // backend URL + stored path
+					// 		: undefined
+					// }
+				/>
 			</div>
 		</header>
 	);

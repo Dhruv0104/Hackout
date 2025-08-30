@@ -71,6 +71,7 @@ async function createContract(req, res) {
 		const subsidyDoc = await SubsidyModel.create({
 			title: contractName,
 			government: '66d0f1111111111111111111',
+			auditor: '66d0f2222222222222222222',
 			producer: producer1._id,
 			totalAmount: Number(totalAmount), // store ETH amount for demo
 			milestones: milestones.map((m) => ({
