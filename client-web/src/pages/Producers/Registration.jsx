@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
 import { fetchPost } from '../../utils/fetch.utils';
 
-// ✅ Validation Schema
 const ProducerSchema = Yup.object().shape({
 	companyName: Yup.string().required('Company Name is required'),
 	contactPerson: Yup.string().required('Contact Person is required'),
@@ -40,7 +39,6 @@ const Registration = () => {
 						}}
 						validationSchema={ProducerSchema}
 						onSubmit={async (values, { resetForm }) => {
-							console.log('Form Data:', values);
 							try {
 								const response = await fetchPost({
 									pathName: 'auth/registration-producer',
@@ -48,7 +46,12 @@ const Registration = () => {
 								});
 								if (response.success) {
 									resetForm();
-									navigate('/login');
+									toast.current.show({
+										severity: 'success',
+										summary: 'Success',
+										detail: 'Registration Successful.',
+									});
+									setTimeout(() => navigate('/login'), 1000);
 								} else {
 									toast.current.show({
 										severity: 'error',

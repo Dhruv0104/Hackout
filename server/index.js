@@ -15,6 +15,7 @@ const { errorHandler, asyncRouteHandler } = require('./utils/route.utils');
 const authRoutes = require('./routes/auth.route');
 const governmentRoutes = require('./routes/government.route');
 const auditRoutes = require('./routes/audit.route');
+const producerRoutes = require('./routes/producer.route');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use(
 app.use('/auth', authRoutes);
 app.use('/government', governmentRoutes);
 app.use('/audit', auditRoutes);
+app.use('/producer', producerRoutes);
 
 app.use(errorHandler);
 

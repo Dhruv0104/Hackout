@@ -5,5 +5,6 @@ const { asyncRouteHandler } = require('../utils/route.utils');
 
 router.get('/fetch-all-producers', asyncRouteHandler(governmentController.fetchAllProducers));
 router.post('/create-contract', asyncRouteHandler(governmentController.createContract));
+router.get('/fetch-active-contracts', asyncRouteHandler(governmentController.fetchActiveContracts));
 
 module.exports = router;

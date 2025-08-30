@@ -1,42 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import PageLayout from '../../components/layout/PageLayout';
 import { ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
+import { fetchGet } from '../../utils/fetch.utils';
+const ETH_TO_INR = 380000;
 
 export default function MySubsidies() {
 	const [globalFilter, setGlobalFilter] = useState('');
-	const [subsidies] = useState([
-		{
-			id: 1,
-			name: 'Mangrove Plantation',
-			milestone: 'Phase 1 Completed',
-			amount: '₹50,000',
-			status: 'Approved',
-		},
-		{
-			id: 2,
-			name: 'Coral Reef Restoration',
-			milestone: 'Pending Verification',
-			amount: '₹75,000',
-			status: 'Pending',
-		},
-		{
-			id: 3,
-			name: 'Seaweed Cultivation',
-			milestone: '50% Complete',
-			amount: '₹40,000',
-			status: 'Pending',
-		},
-	]);
+	const [subsidies, setSubsidies] = useState([]);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const fetchSubsidies = async () => {
+			const id = localStorage.getItem('_id');
+			const response = await fetchGet({ pathName: `producer/fetch-all-subsidies/${id}` });
+			if (response.success) {
+				setSubsidies(response.data);
+			}
+			console.log('subsidies:', response.data);
+		};
+		fetchSubsidies();
+	}, []);
+
+	const srNoTemplate = (rowData, { rowIndex }) => rowIndex + 1;
+
+	const milestoneTemplate = (rowData) =>
+		rowData.milestones && rowData.milestones.length > 0
+			? rowData.milestones[0].description
+			: '-';
+
+	const amountTemplate = (rowData) =>
+		rowData.milestones && rowData.milestones.length > 0
+			? `₹${rowData.milestones[0].amount * ETH_TO_INR}`
+			: '-';
 
 	const statusTemplate = (rowData) => {
 		let statusClass =
 			rowData.status === 'Approved'
 				? 'bg-green-100 text-green-700'
-				: rowData.status === 'Pending'
+				: rowData.status === 'InProgress'
 				? 'bg-yellow-100 text-yellow-700'
 				: 'bg-red-100 text-red-700';
 
@@ -47,20 +52,31 @@ export default function MySubsidies() {
 		);
 	};
 
-	const viewButtonTemplate = (rowData) => {
-		return (
-			<Button
-				label="View"
-				icon="pi pi-eye"
-				className="p-button-sm p-button-outlined text-primary text-center self-center"
-				onClick={() => alert(`Viewing subsidy: ${rowData.name}`)}
-			/>
-		);
+	const actionTemplate = (rowData) => {
+		if (rowData.status === 'InProgress') {
+			return (
+				<Button
+					label="Submit Milestone"
+					icon="pi pi-upload"
+					className="p-button-sm p-button-success text-white"
+					onClick={() => navigate(`/producer/milestone-form/${rowData._id}`)}
+				/>
+			);
+		} else {
+			return (
+				<Button
+					label="View"
+					icon="pi pi-eye"
+					className="p-button-sm p-button-outlined text-primary"
+					onClick={() => alert(`Viewing subsidy: ${rowData.title}`)}
+				/>
+			);
+		}
 	};
 
 	const customSortIcon = ({ sortOrder }) => {
 		return (
-			<span className="">
+			<span>
 				{sortOrder === 1 ? (
 					<ArrowDownNarrowWide className="text-white w-4 h-4" />
 				) : sortOrder === -1 ? (
@@ -96,14 +112,13 @@ export default function MySubsidies() {
 						rowsPerPageOptions={[5, 10, 25, 50]}
 					>
 						<Column
-							field="id"
 							header="Sr No."
-							sortable
+							body={srNoTemplate}
 							bodyClassName="text-text text-md border border-gray-300 px-3 py-2"
-							headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300 p-5"
+							headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
 						/>
 						<Column
-							field="name"
+							field="title"
 							header="Subsidy Name"
 							sortable
 							filter
@@ -112,8 +127,8 @@ export default function MySubsidies() {
 							headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
 						/>
 						<Column
-							field="milestone"
 							header="Milestone"
+							body={milestoneTemplate}
 							sortable
 							filter
 							filterPlaceholder="Search by milestone"
@@ -121,8 +136,8 @@ export default function MySubsidies() {
 							headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
 						/>
 						<Column
-							field="amount"
 							header="Amount"
+							body={amountTemplate}
 							sortable
 							bodyClassName="text-text text-md border border-gray-300 px-3 py-2"
 							headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
@@ -137,7 +152,7 @@ export default function MySubsidies() {
 						/>
 						<Column
 							header="Action"
-							body={viewButtonTemplate}
+							body={actionTemplate}
 							exportable={false}
 							bodyClassName="text-text text-md text-center border border-gray-300 px-3 py-2"
 							headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
