@@ -208,6 +208,15 @@ export default function VerifyMilestones() {
 						setRowsPerPage(e.rows);
 					}}
 				>
+					{/* Serial No. Column */}
+					<Column
+						field="serialNo"
+						header="Sr No."
+						sortable
+						bodyClassName="text-md border border-gray-300 px-3 py-2 text-center"
+						headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300 text-center"
+					/>
+
 					<Column
 						field="contractName"
 						header="Contract Name"
@@ -226,7 +235,6 @@ export default function VerifyMilestones() {
 						bodyClassName="text-md border border-gray-300 px-3 py-2"
 						headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
 					/>
-
 					<Column
 						field="totalAmount"
 						header="Total Amount"
@@ -262,6 +270,7 @@ export default function VerifyMilestones() {
 						headerClassName="bg-primary-border text-white text-lg font-semibold border border-gray-300"
 					/>
 				</DataTable>
+
 				{/* Contract Details Modal */}
 				<Dialog
 					header="Contract Details"

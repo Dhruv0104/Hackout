@@ -19,8 +19,6 @@ import { Button } from 'primereact/button';
 import { FaFileContract, FaMoneyBillWave, FaUsers, FaClock } from 'react-icons/fa';
 import PageLayout from '../../components/layout/PageLayout';
 import { fetchGet } from '../../utils/fetch.utils';
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 
 const COLORS = ['#FFC107', '#4CAF50', '#F44336'];
 
@@ -84,34 +82,31 @@ const ProducerDashboard = ({ producerId }) => {
 	return (
 		<PageLayout>
 			<div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-				{/* Header */}
-				<div className="flex justify-between items-center mb-8">
-					<h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
-						Producer Dashboard
-					</h1>
-					{/* <Button
-						label="Export Report"
-						icon="pi pi-download"
-						className="p-button-sm p-button-success shadow-md"
-						onClick={handleExportExcel}
-					/> */}
-				</div>
+				<h1 className="text-3xl text-primary font-bold mb-8 text-center tracking-wide">
+					Producer Dashboard
+				</h1>
 
-				{/* Cards */}
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-green-100 to-green-200">
+					<Card
+						className="rounded-2xl p-0 w-72 h-32 shadow-lg bg-gradient-to-br from-green-100 to-green-200 
+													 transition-transform transform hover:shadow-xl duration-300"
+					>
 						<div className="flex items-center space-x-4">
-							<FaFileContract className="text-green-700 text-4xl" />
+							<div className="p-4 bg-green-700 rounded-full text-white shadow-md">
+								<FaFileContract className="text-3xl" />
+							</div>
 							<div>
-								<p className="text-lg font-semibold">Total Contracts</p>
-								<h2 className="text-3xl font-bold text-green-800">
+								<p className="text-base font-medium text-gray-700">
+									Total Contracts
+								</p>
+								<h2 className="text-4xl font-extrabold text-green-800">
 									{cards.totalContracts}
 								</h2>
 							</div>
 						</div>
 					</Card>
 
-					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-blue-100 to-blue-200">
+					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-blue-100 to-blue-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<FaMoneyBillWave className="text-blue-700 text-4xl" />
 							<div>
@@ -123,7 +118,7 @@ const ProducerDashboard = ({ producerId }) => {
 						</div>
 					</Card>
 
-					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-yellow-100 to-yellow-200">
+					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-yellow-100 to-yellow-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<FaClock className="text-yellow-700 text-4xl" />
 							<div>
@@ -135,7 +130,7 @@ const ProducerDashboard = ({ producerId }) => {
 						</div>
 					</Card>
 
-					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-purple-100 to-purple-200">
+					<Card className="rounded-2xl shadow-lg bg-gradient-to-br from-purple-100 to-purple-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<FaUsers className="text-purple-700 text-4xl" />
 							<div>
@@ -148,7 +143,6 @@ const ProducerDashboard = ({ producerId }) => {
 					</Card>
 				</div>
 
-				{/* Graphs */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 					<Card className="rounded-2xl shadow-lg">
 						<h3 className="text-xl font-bold mb-4">Subsidy Applied per Month</h3>
