@@ -6,10 +6,8 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Tag } from 'primereact/tag';
-import { useEffect } from 'react';
 import { fetchGet, fetchPost } from '../../utils/fetch.utils';
 import PageLayout from '../../components/layout/PageLayout';
-import { fetchGet, fetchPost } from '../../utils/fetch.utils';
 import { ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 
 const ETH_TO_INR = 380000;
