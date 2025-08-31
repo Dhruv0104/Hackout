@@ -134,7 +134,18 @@ const Login = () => {
 						loading={loading}
 						className="w-full bg-primary hover:bg-[#2a547a] transition text-white font-semibold py-2.5 rounded shadow-sm transform hover:scale-105"
 					/>
-
+					<div className="mt-4 text-center">
+						<span className="text-sm text-gray-600">
+							New User?{" "}
+							<button
+								onClick={() => navigate("/producer/registration")}
+								type="button"
+								className="text-primary font-medium hover:underline"
+							>
+								Register
+							</button>
+						</span>
+					</div>
 					<div className="mt-4 flex flex-col items-end gap-2">
 						<Button
 							label={
