@@ -18,6 +18,7 @@ const CreateSmartContract = () => {
 	};
 	const [producers, setProducers] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [submitLoading, setSubmitLoading] = useState(false);
 	const navigate = useNavigate();
 	const toast = useRef(null);
 
@@ -60,7 +61,7 @@ const CreateSmartContract = () => {
 	}, []);
 
 	const handleSubmit = async (values) => {
-		setLoading(true);
+		setSubmitLoading(true);
 		try {
 			const res = await fetchPost({
 				pathName: 'government/create-contract',
@@ -78,8 +79,8 @@ const CreateSmartContract = () => {
 					detail: 'Smart Contract Deployed!',
 				});
 				setTimeout(() => {
-					navigate('/government/dashboard');
-				}, 900);
+					navigate('/government/active-contracts');
+				}, 1000);
 			} else {
 				toast.current.show({
 					severity: 'error',
@@ -90,12 +91,17 @@ const CreateSmartContract = () => {
 		} catch (error) {
 			toast.current.show({ severity: 'error', summary: 'Error', detail: error.message });
 		}
-		setLoading(false);
+		setSubmitLoading(false);
 	};
 
 	return (
 		<PageLayout>
 			<Toast ref={toast} />
+			{submitLoading && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-[0px] bg-black/10">
+					<div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+				</div>
+			)}
 			<div className="p-5">
 				<h1 className="text-3xl text-primary font-bold mb-8 text-start tracking-wide">
 					Create New Contract
@@ -176,13 +182,13 @@ const CreateSmartContract = () => {
 
 									<div className="mb-4">
 										<label className="block mb-1 font-medium">
-											Total Subsidy Amount
+											Total Subsidy Amount (ETH)
 										</label>
 										<Field
 											as={InputText}
 											name="totalAmount"
 											className={baseInputClasses}
-											placeholder="₹100,000"
+											placeholder="e.g. 0.01"
 										/>
 										<ErrorMessage
 											name="totalAmount"
@@ -192,7 +198,9 @@ const CreateSmartContract = () => {
 									</div>
 
 									<div className="mb-5">
-										<h3 className="text-lg font-semibold mb-2">Milestone</h3>
+										<h3 className="text-lg font-semibold mb-2">
+											Milestone (Tons)
+										</h3>
 										<div className="grid grid-cols-3 gap-2">
 											<Field
 												as={InputText}
@@ -204,7 +212,7 @@ const CreateSmartContract = () => {
 												as={InputText}
 												name="milestone.amount"
 												className={`${baseInputClasses} col-span-1`}
-												placeholder="Amount"
+												placeholder="Amount (ETH)"
 											/>
 										</div>
 										<ErrorMessage

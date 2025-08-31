@@ -59,6 +59,7 @@ export default function LogViewer() {
 					summary: 'Success',
 					detail: 'Milestone accepted',
 				});
+				navigate('/auditor/verify-milestones');
 			} else {
 				toast.current.show({
 					severity: 'error',
@@ -90,10 +91,11 @@ export default function LogViewer() {
 			});
 			if (res && res.success !== false) {
 				toast.current.show({
-					severity: 'success',
-					summary: 'Success',
+					severity: 'error',
+					summary: 'Error',
 					detail: 'Milestone rejected',
 				});
+				navigate('/auditor/verify-milestones');
 			} else {
 				toast.current.show({
 					severity: 'error',
