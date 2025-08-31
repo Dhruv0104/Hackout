@@ -82,7 +82,9 @@ export default function MilestoneForm() {
 				detail: 'Submission Successful',
 			});
 			resetForm();
-			navigate('/producer/subsidies');
+			setTimeout(() => {
+				navigate('/producer/subsidies');
+			}, 900);
 		} catch (err) {
 			toast.current.show({
 				severity: 'error',
@@ -143,7 +145,7 @@ export default function MilestoneForm() {
 
 								<div>
 									<label className="block mb-1 font-medium">
-										Produced Quantity
+										Produced Quantity (Tons)
 									</label>
 									<InputText
 										id="description"
