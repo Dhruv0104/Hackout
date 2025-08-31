@@ -244,7 +244,6 @@ function ActiveContractsTable() {
 						bodyClassName="text-text border px-3 py-2"
 						headerClassName="bg-primary-border text-white font-semibold border"
 					/>
-
 					<Column
 						field="releasedAt"
 						header="Released Date"
@@ -253,7 +252,9 @@ function ActiveContractsTable() {
 						dataType="date"
 						filterElement={dateFilterTemplate}
 						body={(row) => {
-							const d = row.releasedAt ? new Date(row.releasedAt) : null;
+							const d = row.milestones[0].releasedAt
+								? new Date(row.milestones[0].releasedAt)
+								: null;
 							return d && !isNaN(d) ? d.toLocaleDateString('en-GB') : '-';
 						}}
 						bodyClassName="text-text border px-3 py-2"
@@ -275,7 +276,6 @@ function ActiveContractsTable() {
 						bodyClassName="text-text border px-3 py-2"
 						headerClassName="bg-primary-border text-white font-semibold border"
 					/>
-
 					<Column
 						header="Actions"
 						body={(row) => (
