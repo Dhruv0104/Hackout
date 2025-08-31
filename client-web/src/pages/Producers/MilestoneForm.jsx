@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Dropdown } from 'primereact/dropdown';
@@ -9,8 +9,6 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import PageLayout from '../../components/layout/PageLayout';
 import { fetchGet } from '../../utils/fetch.utils';
-import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const validationSchema = Yup.object({
 	milestone: Yup.string().required('Milestone is required'),
@@ -21,8 +19,10 @@ const validationSchema = Yup.object({
 export default function MilestoneForm() {
 	const { subsidyId } = useParams();
 	const [milestoneOptions, setMilestoneOptions] = useState([]);
+	const [loading, setLoading] = useState(false);
 	const toast = useRef(null);
 	const navigate = useNavigate();
+
 	useEffect(() => {
 		const fetchMilestones = async () => {
 			try {
@@ -44,13 +44,12 @@ export default function MilestoneForm() {
 	}, [subsidyId]);
 
 	const handleSubmit = async (values, { resetForm }) => {
+		setLoading(true);
 		try {
 			const formData = new FormData();
 			formData.append('milestone', values.milestone);
 			formData.append('description', values.description);
-			if (values.files) {
-				formData.append('file', values.files);
-			}
+			if (values.files) formData.append('file', values.files);
 			const producerId = localStorage.getItem('_id');
 			formData.append('producerId', producerId);
 
@@ -74,18 +73,24 @@ export default function MilestoneForm() {
 					summary: 'Error',
 					detail: 'Something Went Wrong!',
 				});
+				setLoading(false);
 				return;
 			}
-
 			toast.current.show({
 				severity: 'success',
 				summary: 'Success',
 				detail: 'Submission Successful',
 			});
-			navigate('/producer/subsidies');
 			resetForm();
+			navigate('/producer/subsidies');
 		} catch (err) {
-			alert('Error: ' + err.message);
+			toast.current.show({
+				severity: 'error',
+				summary: 'Error',
+				detail: err.message,
+			});
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -199,8 +204,9 @@ export default function MilestoneForm() {
 								<div className="flex justify-end">
 									<Button
 										type="submit"
-										label="Submit"
+										label={loading ? 'Submitting...' : 'Submit'}
 										className="w-full bg-primary text-white text-lg py-2 rounded hover:primary-hover font-semibold"
+										disabled={loading}
 									/>
 								</div>
 							</Form>

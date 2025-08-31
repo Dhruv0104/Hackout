@@ -36,8 +36,6 @@ const ProducerDashboard = ({ producerId }) => {
 				// Scale card values
 				const scaledCards = {
 					...res.cards,
-					totalSubsidyApplied: res.cards.totalSubsidyApplied * factor,
-					totalPending: res.cards.totalPending * factor,
 					totalReceived: res.cards.totalReceived * factor,
 				};
 
@@ -110,9 +108,9 @@ const ProducerDashboard = ({ producerId }) => {
 						<div className="flex items-center space-x-4">
 							<FaMoneyBillWave className="text-blue-700 text-4xl" />
 							<div>
-								<p className="text-lg font-semibold">Total Subsidy Applied</p>
+								<p className="text-base font-semibold">Total Approved Subsidy</p>
 								<h2 className="text-3xl font-bold text-blue-800">
-									₹{cards.totalSubsidyApplied.toLocaleString()}
+									{cards.totalSubsidyApproved}
 								</h2>
 							</div>
 						</div>
@@ -124,7 +122,7 @@ const ProducerDashboard = ({ producerId }) => {
 							<div>
 								<p className="text-lg font-semibold">Total Pending Subsidy</p>
 								<h2 className="text-3xl font-bold text-yellow-800">
-									₹{cards.totalPending.toLocaleString()}
+									{cards.totalSubsidyPending}
 								</h2>
 							</div>
 						</div>
