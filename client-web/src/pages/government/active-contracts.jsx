@@ -91,7 +91,11 @@ function ActiveContractsTable() {
 				? 'bg-blue-100 text-blue-700'
 				: rowData.status === 'InProgress'
 				? 'bg-yellow-100 text-yellow-700'
-				: 'bg-green-100 text-green-700';
+				: rowData.status === 'Completed'
+				? 'bg-green-100 text-green-700'
+				: rowData.status === 'Rejected'
+				? 'bg-red-100 text-red-700'
+				: 'bg-gray-100 text-gray-700';
 
 		return (
 			<span className={`px-3 py-1 rounded-full text-sm font-medium ${statusClass}`}>
