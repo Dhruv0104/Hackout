@@ -136,6 +136,10 @@ Tokens), with distinct roles for Government, Producer, and Auditor.
 
 ![view-all-contracts](client-web/src/assets/gov-view-contracts.png)
 
+### Contract Logs:
+
+![contract-logs](client-web/src/assets/admin-logs.png)
+
 ### Fund Deposits: Deposit funds into smart contract
 
 View Transactions & Reports: Track milestones and fund release.
@@ -144,26 +148,27 @@ View Transactions & Reports: Track milestones and fund release.
 
 ### Dashboard:
 
-![gov-dashboard](client-web/src/assets/producer-dashboard.png)
+![producer-dashboard1](client-web/src/assets/producer-dashboard1.png)
+![producer-dashboard2](client-web/src/assets/producer-dashboard2.png)
 
 ### Producer Subsidies:
 
-![producer-subsidies](client-web/src/assets/producer-subsidies.png)
+![producer-subsidies](client-web/src/assets/producer-contract.png)
 
 ### Submit Milestones:
 
-![producer-submit](client-web/src/assets/producer-milestone-submission.png)
+![producer-submit](client-web/src/assets/milestone-submission.png)
 
 ## Auditor
 
 ### Dashboard:
 
-![gov-dashboard](client-web/src/assets/auditor-dashboard.png)
+![auditor-dashboard](client-web/src/assets/auditor-dashboard.png)
 
 ### Verifcation By Auditor:
 
-![producer-submit](client-web/src/assets/auditor-verification.png)
+![auditor-verification](client-web/src/assets/auditor-verification.png)
 
 ### Contract Logs:
 
-![producer-submit](client-web/src/assets/contracts-logs.png)
+![contract-logs](client-web/src/assets/auditor-logs.png)
