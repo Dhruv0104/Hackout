@@ -57,7 +57,7 @@ export default function MySubsidies() {
 			return (
 				<Button
 					label="Submit"
-					className="p-button-sm p-button-success text-white"
+					className="p-button-sm bg-primary text-white"
 					onClick={() => navigate(`/producer/milestone-form/${rowData._id}`)}
 				/>
 			);
