@@ -21,42 +21,21 @@ const mockCards = {
 	totalPending: 10,
 };
 
-const mockGraphs = {
-	auditedPerMonth: [
-		{ month: 'Jan 2025', total: 3 },
-		{ month: 'Feb 2025', total: 4 },
-		{ month: 'Mar 2025', total: 2 },
-		{ month: 'Apr 2025', total: 5 },
-		{ month: 'May 2025', total: 6 },
-	],
-	statusPerMonth: [
-		{ month: 'Jan 2025', Created: 1, Funded: 0, InProgress: 1, Completed: 1 },
-		{ month: 'Feb 2025', Created: 0, Funded: 2, InProgress: 1, Completed: 1 },
-		{ month: 'Mar 2025', Created: 1, Funded: 1, InProgress: 0, Completed: 0 },
-		{ month: 'Apr 2025', Created: 2, Funded: 1, InProgress: 1, Completed: 1 },
-		{ month: 'May 2025', Created: 1, Funded: 2, InProgress: 1, Completed: 2 },
-	],
-};
-
 const AuditorDashboard = ({ auditorId }) => {
 	const [cards, setCards] = useState(null);
 	const [graphs, setGraphs] = useState(null);
-	useEffect(() => {
-		setCards(mockCards);
-		setGraphs(mockGraphs);
-	}, []);
 
-	// useEffect(() => {
-	// 	async function loadData() {
-	// 		const id = localStorage.getItem('_id'); // auditor id
-	// 		const res = await fetchGet({ pathName: `audit/dashboard/${id}` });
-	// 		if (res?.success) {
-	// 			setCards(res.cards);
-	// 			setGraphs(res.graphs);
-	// 		}
-	// 	}
-	// 	loadData();
-	// }, []);
+	useEffect(() => {
+		async function loadData() {
+			const id = localStorage.getItem('_id'); // auditor id
+			const res = await fetchGet({ pathName: `audit/dashboard/${id}` });
+			if (res?.success) {
+				setCards(res.cards);
+				setGraphs(res.graphs);
+			}
+		}
+		loadData();
+	}, []);
 
 	if (!cards || !graphs) return <p className="p-6 text-gray-600">Loading dashboard...</p>;
 

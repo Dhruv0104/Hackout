@@ -6,71 +6,26 @@ import { Chart } from 'primereact/chart';
 import { fetchGet } from '../../utils/fetch.utils';
 import { FaFileContract, FaMoneyBillWave, FaUsers, FaClock } from 'react-icons/fa';
 const ethToInr = 380000;
-const mockDashboardData = {
-	subsidyCount: 12, // Total contracts
-	producerCount: 8, // Number of producers
-	totalSubsidyCompleted: 5, // Completed contracts
-	totalPendingAmount: 12.5, // in ETH
-	currentAmount: 25, // Current allocated amount in ETH
-	totalAmountDisbursed: 18.2, // Total disbursed amount in ETH
-	charts: {
-		amountPerMonth: [
-			{ _id: { month: 1, year: 2025 }, totalAllocated: 2, totalDistributed: 1.5 },
-			{ _id: { month: 2, year: 2025 }, totalAllocated: 3, totalDistributed: 2.7 },
-			{ _id: { month: 3, year: 2025 }, totalAllocated: 4, totalDistributed: 3.2 },
-			{ _id: { month: 4, year: 2025 }, totalAllocated: 3.5, totalDistributed: 2.9 },
-			{ _id: { month: 5, year: 2025 }, totalAllocated: 4.2, totalDistributed: 3.8 },
-		],
-		statusDistribution: [
-			{ _id: 'Verified', count: 5 },
-			{ _id: 'Pending', count: 4 },
-			{ _id: 'Rejected', count: 3 },
-		],
-		subsidyAllocatedPerMonth: [
-			{ _id: { month: 1, year: 2025 }, totalAllocated: 2 },
-			{ _id: { month: 2, year: 2025 }, totalAllocated: 3 },
-			{ _id: { month: 3, year: 2025 }, totalAllocated: 4 },
-			{ _id: { month: 4, year: 2025 }, totalAllocated: 3.5 },
-			{ _id: { month: 5, year: 2025 }, totalAllocated: 4.2 },
-		],
-		producersPerMonth: [
-			{ _id: { month: 1, year: 2025 }, count: 2 },
-			{ _id: { month: 2, year: 2025 }, count: 3 },
-			{ _id: { month: 3, year: 2025 }, count: 4 },
-			{ _id: { month: 4, year: 2025 }, count: 3 },
-			{ _id: { month: 5, year: 2025 }, count: 5 },
-		],
-	},
-};
 
 const GovernmentDashboard = () => {
 	const [dashboardData, setDashboardData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
-		setLoading(true);
-		// Mock delay to simulate API
-		setTimeout(() => {
-			setDashboardData(mockDashboardData);
-			setLoading(false);
-		}, 500); // half second delay
+		const fetchData = async () => {
+			try {
+				const res = await fetchGet({ pathName: 'government/dashboard' });
+				if (res.success) {
+					console.log('data: ', res.data);
+					setDashboardData(res.data);
+				}
+			} catch (err) {
+				console.error('Failed to fetch dashboard data:', err);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchData();
 	}, []);
-
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		try {
-	// 			const res = await fetchGet({ pathName: 'government/dashboard' });
-	// 			if (res.success) {
-	// 				console.log('data: ', res.data);
-	// 				setDashboardData(res.data);
-	// 			}
-	// 		} catch (err) {
-	// 			console.error('Failed to fetch dashboard data:', err);
-	// 		} finally {
-	// 			setLoading(false);
-	// 		}
-	// 	};
-	// 	fetchData();
-	// }, []);
 
 	if (loading) {
 		return (
