@@ -3,6 +3,7 @@ const { ethers } = require('ethers');
 const SubsidyModel = require('../models/subsidy.model');
 const ProducerModel = require('../models/producer.model');
 const GovernmentModel = require('../models/government.model'); // if you have it
+const MilestoneSubmission = require('../models/milestoneSubmission.model');
 // const AuditorModel = require("../models/auditor.model"); // optional
 
 // Load compiled ABI + bytecode
@@ -142,6 +143,13 @@ async function fetchActiveContracts(req, res) {
 	}
 }
 
+async function fetchMilestones(req, res) {
+	const {id}=req.params;
+	const subsidy = await SubsidyModel.findById(id);
+	const submissions = await MilestoneSubmission.find({subsidy:id});
+	return res.json({ success: true, data: submissions, subsidy: subsidy });
+}
+
 async function dashboard(req, res) {
 	try {
 		const subsidyCount = await SubsidyModel.countDocuments();
@@ -262,4 +270,5 @@ module.exports = {
 	releaseMilestone,
 	fetchActiveContracts,
 	dashboard,
+	fetchMilestones,
 };

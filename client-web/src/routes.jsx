@@ -14,6 +14,7 @@ import AuditorDashboard from './pages/auditors/AuditorDashboard';
 import VerifyMilestones from './pages/auditors/VerifyMilestones';
 import LogViewer from './pages/auditors/LogViewer';
 import Milestones from './pages/Producers/milestones';
+import AllMilestones from './pages/government/AllMilestones';
 
 const routes = createBrowserRouter([
 	{
@@ -49,6 +50,7 @@ const routes = createBrowserRouter([
 			{ path: 'create-smart-contract', element: <CreateSmartContract /> },
 			{ path: 'dashboard', element: <GovernmentDashboard /> },
 			{ path: 'active-contracts', element: <ActiveContractsTable /> },
+			{ path: 'all-milestones/:id', element: <AllMilestones /> },
 		],
 	},
 	{

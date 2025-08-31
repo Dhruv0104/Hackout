@@ -7,7 +7,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Tag } from 'primereact/tag';
 import { useEffect } from 'react';
-import { fetchGet } from '../../utils/fetch.utils';
+import { fetchGet, fetchPost } from '../../utils/fetch.utils';
 import PageLayout from '../../components/layout/PageLayout';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
