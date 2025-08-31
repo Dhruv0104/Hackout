@@ -19,6 +19,35 @@ import { Button } from 'primereact/button';
 import { FaFileContract, FaMoneyBillWave, FaUsers, FaClock } from 'react-icons/fa';
 import PageLayout from '../../components/layout/PageLayout';
 import { fetchGet } from '../../utils/fetch.utils';
+const mockCards = {
+	totalContracts: 12,
+	totalSubsidyApproved: 8,
+	totalSubsidyPending: 4,
+	totalReceived: 9500000, // in INR
+};
+const mockGraphs = {
+	subsidyApplyArr: [
+		{ month: 'Jan 2025', total: 2 },
+		{ month: 'Feb 2025', total: 3 },
+		{ month: 'Mar 2025', total: 1 },
+		{ month: 'Apr 2025', total: 4 },
+		{ month: 'May 2025', total: 2 },
+	],
+	statusArr: [
+		{ month: 'Jan 2025', Created: 1, Funded: 0, InProgress: 1, Completed: 0 },
+		{ month: 'Feb 2025', Created: 1, Funded: 1, InProgress: 0, Completed: 1 },
+		{ month: 'Mar 2025', Created: 0, Funded: 1, InProgress: 1, Completed: 0 },
+		{ month: 'Apr 2025', Created: 2, Funded: 0, InProgress: 1, Completed: 1 },
+		{ month: 'May 2025', Created: 1, Funded: 1, InProgress: 0, Completed: 1 },
+	],
+	amountTrackArr: [
+		{ month: 'Jan 2025', released: 1200000 },
+		{ month: 'Feb 2025', released: 1800000 },
+		{ month: 'Mar 2025', released: 900000 },
+		{ month: 'Apr 2025', released: 2500000 },
+		{ month: 'May 2025', released: 2000000 },
+	],
+};
 
 const COLORS = ['#FFC107', '#4CAF50', '#F44336'];
 
@@ -27,37 +56,42 @@ const ProducerDashboard = ({ producerId }) => {
 	const [graphs, setGraphs] = useState(null);
 
 	useEffect(() => {
-		async function loadData() {
-			const producerId = localStorage.getItem('_id');
-			const res = await fetchGet({ pathName: `producer/dashboard/${producerId}` });
-			if (res?.success) {
-				const factor = 380000;
+		setCards(mockCards);
+		setGraphs(mockGraphs);
+	}, []);
 
-				// Scale card values
-				const scaledCards = {
-					...res.cards,
-					totalReceived: res.cards.totalReceived * factor,
-				};
+	// useEffect(() => {
+	// 	async function loadData() {
+	// 		const producerId = localStorage.getItem('_id');
+	// 		const res = await fetchGet({ pathName: `producer/dashboard/${producerId}` });
+	// 		if (res?.success) {
+	// 			const factor = 380000;
 
-				// Scale graph values
-				const scaledGraphs = {
-					subsidyApplyArr: res.graphs.subsidyApplyArr.map((d) => ({
-						...d,
-						total: d.total * factor,
-					})),
-					statusArr: res.graphs.statusArr, // assuming counts only
-					amountTrackArr: res.graphs.amountTrackArr.map((d) => ({
-						...d,
-						released: d.released * factor,
-					})),
-				};
+	// 			// Scale card values
+	// 			const scaledCards = {
+	// 				...res.cards,
+	// 				totalReceived: res.cards.totalReceived * factor,
+	// 			};
 
-				setCards(scaledCards);
-				setGraphs(scaledGraphs);
-			}
-		}
-		loadData();
-	}, [producerId]);
+	// 			// Scale graph values
+	// 			const scaledGraphs = {
+	// 				subsidyApplyArr: res.graphs.subsidyApplyArr.map((d) => ({
+	// 					...d,
+	// 					total: d.total * factor,
+	// 				})),
+	// 				statusArr: res.graphs.statusArr, // assuming counts only
+	// 				amountTrackArr: res.graphs.amountTrackArr.map((d) => ({
+	// 					...d,
+	// 					released: d.released * factor,
+	// 				})),
+	// 			};
+
+	// 			setCards(scaledCards);
+	// 			setGraphs(scaledGraphs);
+	// 		}
+	// 	}
+	// 	loadData();
+	// }, [producerId]);
 
 	// const handleExportExcel = () => {
 	// 	const data = [
