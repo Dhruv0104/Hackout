@@ -55,21 +55,27 @@ async function submitMilestone(req, res) {
 }
 
 async function fetchMilestones(req, res) {
-	const {id}=req.params;
+	const { id } = req.params;
 	const subsidy = await SubsidyModel.findById(id);
-	const submissions = await MilestoneSubmission.find({subsidy:id});
+	const submissions = await MilestoneSubmission.find({ subsidy: id });
 	return res.json({ success: true, data: submissions, subsidy: subsidy });
 }
 
 async function getProducerDashboard(req, res) {
 	try {
 		const producerId = req.params.id;
-
 		const subsidies = await SubsidyModel.find({ producer: producerId });
 
 		// ---- Cards ----
 		const totalContracts = subsidies.length;
-		const totalSubsidyApplied = subsidies.reduce((sum, s) => sum + s.totalAmount, 0);
+		const totalSubsidyApproved = await SubsidyModel.countDocuments({
+			producer: producerId,
+			status: 'Completed',
+		});
+		const totalSubsidyPending = await SubsidyModel.countDocuments({
+			producer: producerId,
+			status: 'InProgress',
+		});
 
 		let totalPending = 0;
 		let totalReceived = 0;
@@ -129,8 +135,8 @@ async function getProducerDashboard(req, res) {
 			success: true,
 			cards: {
 				totalContracts,
-				totalSubsidyApplied,
-				totalPending,
+				totalSubsidyApproved,
+				totalSubsidyPending,
 				totalReceived,
 			},
 			graphs: {

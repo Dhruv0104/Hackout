@@ -16,6 +16,7 @@ const GovernmentDashboard = () => {
 			try {
 				const res = await fetchGet({ pathName: 'government/dashboard' });
 				if (res.success) {
+					console.log('data: ', res.data);
 					setDashboardData(res.data);
 				}
 			} catch (err) {
@@ -30,8 +31,11 @@ const GovernmentDashboard = () => {
 	if (loading) {
 		return (
 			<PageLayout>
-				<div className="flex justify-center items-center h-screen">
-					<p>Loading dashboard...</p>
+				<div className="flex justify-center items-center h-64">
+					<div className="text-center">
+						<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
+						<p className="mt-3 text-primary">Loading...</p>
+					</div>
 				</div>
 			</PageLayout>
 		);
@@ -122,13 +126,9 @@ const GovernmentDashboard = () => {
 				<h1 className="text-3xl text-primary font-bold mb-8 text-center tracking-wide">
 					Government Dashboard
 				</h1>
-
 				{/* Metric Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-					<Card
-						className="rounded-2xl p-0 w-72 h-32 shadow-lg bg-gradient-to-br from-green-100 to-green-200 
-                                 transition-transform transform hover:shadow-xl duration-300"
-					>
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+					<Card className="rounded-2xl p-0 h-32 shadow-lg bg-gradient-to-br from-green-100 to-green-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<div className="p-4 bg-green-700 rounded-full text-white shadow-md">
 								<FaFileContract className="text-3xl" />
@@ -144,10 +144,7 @@ const GovernmentDashboard = () => {
 						</div>
 					</Card>
 
-					<Card
-						className="rounded-2xl p-0 w-72 h-32 shadow-lg bg-gradient-to-br from-blue-100 to-blue-200 
-                                 transition-transform transform hover:shadow-xl duration-300"
-					>
+					<Card className="rounded-2xl p-0 h-32 shadow-lg bg-gradient-to-br from-blue-100 to-blue-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<div className="p-4 bg-blue-700 rounded-full text-white shadow-md">
 								<FaUsers className="text-3xl" />
@@ -161,10 +158,7 @@ const GovernmentDashboard = () => {
 						</div>
 					</Card>
 
-					<Card
-						className="rounded-2xl p-0 w-72 h-32 shadow-lg bg-gradient-to-br from-purple-100 to-purple-200 
-                                 transition-transform transform hover:shadow-xl duration-300"
-					>
+					<Card className="rounded-2xl p-0 h-32 shadow-lg bg-gradient-to-br from-purple-100 to-purple-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<div className="p-4 bg-purple-700 rounded-full text-white shadow-md">
 								<FaMoneyBillWave className="text-3xl" />
@@ -180,10 +174,7 @@ const GovernmentDashboard = () => {
 						</div>
 					</Card>
 
-					<Card
-						className="rounded-2xl p-0 w-72 h-32 shadow-lg bg-gradient-to-br from-yellow-100 to-yellow-200 
-                                 transition-transform transform hover:shadow-xl duration-300"
-					>
+					<Card className="rounded-2xl p-0 h-32 shadow-lg bg-gradient-to-br from-yellow-100 to-yellow-200 transition-transform transform hover:shadow-xl duration-300">
 						<div className="flex items-center space-x-4">
 							<div className="p-4 bg-yellow-700 rounded-full text-white shadow-md">
 								<FaClock className="text-3xl" />
@@ -193,7 +184,47 @@ const GovernmentDashboard = () => {
 									Pending Amount
 								</p>
 								<h2 className="text-3xl font-extrabold text-yellow-800">
-									{currencyFormat(totalPendingAmount)}
+									₹
+									{(parseFloat(totalPendingAmount) * ethToInr).toLocaleString(
+										'en-IN',
+										{ maximumFractionDigits: 2 }
+									)}
+								</h2>
+							</div>
+						</div>
+					</Card>
+
+					<Card className="rounded-2xl p-0 h-32 shadow-lg bg-gradient-to-br from-pink-100 to-pink-200 transition-transform transform hover:shadow-xl duration-300">
+						<div className="flex items-center space-x-4">
+							<div className="p-4 bg-pink-700 rounded-full text-white shadow-md">
+								<FaMoneyBillWave className="text-3xl" />
+							</div>
+							<div>
+								<p className="text-base font-medium text-gray-700">Total Amount</p>
+								<h2 className="text-3xl font-extrabold text-pink-800">
+									₹
+									{(
+										parseFloat(dashboardData.currentAmount) * ethToInr
+									).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+								</h2>
+							</div>
+						</div>
+					</Card>
+
+					<Card className="rounded-2xl p-0 h-32 shadow-lg bg-gradient-to-br from-teal-100 to-teal-200 transition-transform transform hover:shadow-xl duration-300">
+						<div className="flex items-center space-x-4">
+							<div className="p-4 bg-teal-700 rounded-full text-white shadow-md">
+								<FaClock className="text-3xl" />
+							</div>
+							<div>
+								<p className="text-base font-medium text-gray-700">
+									Total Disbursed Amount
+								</p>
+								<h2 className="text-3xl font-extrabold text-teal-800">
+									₹
+									{(
+										parseFloat(dashboardData.totalAmountDisbursed) * ethToInr
+									).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
 								</h2>
 							</div>
 						</div>
